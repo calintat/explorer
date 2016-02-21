@@ -1,0 +1,23 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/selectable_foreground"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/list_item_image"
+        android:layout_width="match_parent"
+        android:layout_height="156dp"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        style="@style/Text.Subhead.Inverse"
+        android:id="@+id/list_item_name"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:background="@color/image"
+        android:padding="16dp" />
+
+</LinearLayout>

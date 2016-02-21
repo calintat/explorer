@@ -1,0 +1,19 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="?colorAccent" >
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:background="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp"
+        android:paddingEnd="?android:listPreferredItemPaddingEnd"
+        android:paddingStart="?android:listPreferredItemPaddingStart"
+        android:paddingTop="16dp"
+        style="@style/Text.Headline.Inverse" />
+
+</FrameLayout>

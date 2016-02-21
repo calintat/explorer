@@ -1,0 +1,40 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Appearance">
+
+        <CheckBoxPreference
+            android:key="pref_icon"
+            android:title="Use circular icons"/>
+
+        <!--<CheckBoxPreference-->
+            <!--android:key="pref_thumbnail"-->
+            <!--android:title="Display thumbnails"-->
+            <!--android:summary="For images and videos"-->
+            <!--android:dependency="pref_icon"/>-->
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="General">
+
+        <CheckBoxPreference
+            android:key="pref_extension"
+            android:title="Hide extensions"
+            android:summary="For known file types"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:key="pref_date"
+            android:title="Show last modified"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:key="pref_size"
+            android:title="Show file sizes"
+            android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

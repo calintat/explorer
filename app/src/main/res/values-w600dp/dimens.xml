@@ -1,0 +1,21 @@
+<resources>
+
+    <dimen name="fab_margin">24dp</dimen>
+
+    <dimen name="title_margin">104dp</dimen>
+
+    <dimen name="list_item_icon_margin">24dp</dimen>
+
+    <dimen name="list_item_name_marginStart">104dp</dimen>
+
+    <dimen name="list_item_name_marginEnd">24dp</dimen>
+
+    <integer name="span_count0">2</integer>
+
+    <integer name="span_count1">2</integer>
+
+    <integer name="span_count2">4</integer>
+
+    <integer name="span_count3">2</integer>
+
+</resources>

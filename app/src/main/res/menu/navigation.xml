@@ -1,0 +1,85 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <group
+        android:id="@+id/navigation_group0" >
+
+        <item
+            android:id="@+id/navigation_internal"
+            android:icon="@drawable/ic_internal"
+            android:title="@string/navigation_internal" />
+
+        <item
+            android:id="@+id/navigation_external"
+            android:icon="@drawable/ic_external"
+            android:title="@string/navigation_external" />
+
+    </group>
+
+    <group
+        android:id="@+id/navigation_group1" >
+
+        <item
+            android:id="@+id/navigation_image"
+            android:icon="@drawable/ic_library_image"
+            android:title="@string/navigation_image" />
+
+
+        <item
+            android:id="@+id/navigation_audio"
+            android:icon="@drawable/ic_library_audio"
+            android:title="@string/navigation_audio" />
+
+        <item
+            android:id="@+id/navigation_video"
+            android:icon="@drawable/ic_library_video"
+            android:title="@string/navigation_video" />
+
+    </group>
+
+    <group
+        android:id="@+id/navigation_group2" >
+
+        <item
+            android:id="@+id/navigation_directory_0"
+            android:icon="@drawable/ic_directory"
+            android:title="@string/navigation_directory_0" />
+
+        <item
+            android:id="@+id/navigation_directory_1"
+            android:icon="@drawable/ic_directory"
+            android:title="@string/navigation_directory_1" />
+
+        <item
+            android:id="@+id/navigation_directory_2"
+            android:icon="@drawable/ic_directory"
+            android:title="@string/navigation_directory_2" />
+
+        <item
+            android:id="@+id/navigation_directory_3"
+            android:icon="@drawable/ic_directory"
+            android:title="@string/navigation_directory_3" />
+
+        <item
+            android:id="@+id/navigation_directory_4"
+            android:icon="@drawable/ic_directory"
+            android:title="@string/navigation_directory_4" />
+
+    </group>
+
+    <group
+        android:id="@+id/navigation_group3" >
+
+        <item
+            android:id="@+id/navigation_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/navigation_settings" />
+
+        <item
+            android:id="@+id/navigation_feedback"
+            android:icon="@drawable/ic_feedback"
+            android:title="@string/navigation_feedback" />
+
+    </group>
+
+</menu>

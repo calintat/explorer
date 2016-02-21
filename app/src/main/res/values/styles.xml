@@ -1,0 +1,74 @@
+<resources>
+
+    <!--APP THEMES-->
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="colorPrimary">@color/colorPrimary0</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark0</item>
+        <item name="colorAccent">@color/colorAccentDark0</item>
+        <item name="colorAccentLight">@color/colorAccentLight</item>
+        <item name="colorSelected">#80B2EBF2</item>
+    </style>
+
+    <style name="AppTheme.Audio" >
+        <item name="colorPrimary">@color/colorPrimary1</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark1</item>
+        <item name="colorAccent">@color/colorAccentDark1</item>
+    </style>
+
+    <style name="AppTheme.Image" >
+        <item name="colorPrimary">@color/colorPrimary2</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark2</item>
+        <item name="colorAccent">@color/colorAccentDark2</item>
+    </style>
+
+    <style name="AppTheme.Video" >
+        <item name="colorPrimary">@color/colorPrimary3</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark3</item>
+        <item name="colorAccent">@color/colorAccentDark3</item>
+    </style>
+
+    <!--TEXT STYLES-->
+
+    <style name="Text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="Text.Body1" >
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="Text.Headline" >
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Headline</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Text.Subhead" >
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Text.Body1.Inverse" >
+        <item name="android:textColor">?android:textColorSecondaryInverse</item>
+    </style>
+
+    <style name="Text.Headline.Inverse" >
+        <item name="android:textColor">?android:textColorPrimaryInverse</item>
+    </style>
+
+    <style name="Text.Subhead.Inverse" >
+        <item name="android:textColor">?android:textColorPrimaryInverse</item>
+    </style>
+
+    <!--ATTRS-->
+
+    <attr name="colorAccentLight"
+          format="color|reference" />
+
+    <attr name="colorSelected"
+          format="color|reference" />
+
+</resources>
