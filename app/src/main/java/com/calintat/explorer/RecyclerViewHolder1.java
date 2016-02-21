@@ -73,8 +73,11 @@ public final class RecyclerViewHolder1 extends RecyclerViewHolder
 
         String string=getTitle(file);
 
-        title.setText(string!=null && string.isEmpty() ? string
-                : (extension ? getName(file) : file.getName()));
+        if(string==null || string.isEmpty())
+        {
+            title.setText(extension ? getName(file) : file.getName());
+        }
+        else title.setText(string);
     }
 
     @Override

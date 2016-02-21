@@ -174,11 +174,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState)
     {
-        recyclerAdapter.select(savedInstanceState.getIntegerArrayList(SAVED_SELECTION));
-
         String path=savedInstanceState.getString(SAVED_DIRECTORY,getInternalStorage().getPath());
 
         if(currentDirectory!=null) setPath(new File(path));
+
+        recyclerAdapter.select(savedInstanceState.getIntegerArrayList(SAVED_SELECTION));
 
         super.onRestoreInstanceState(savedInstanceState);
     }
@@ -429,6 +429,14 @@ public class MainActivity extends AppCompatActivity
 
                 switch(item.getItemId())
                 {
+                    case R.id.navigation_internal:
+                        setPath(getInternalStorage());
+                        return true;
+
+                    case R.id.navigation_external:
+                        setPath(getExternalStorage());
+                        return true;
+
                     case R.id.navigation_directory_0:
                         setPath(getPublicDirectory("DCIM"));
                         return true;
@@ -601,7 +609,7 @@ public class MainActivity extends AppCompatActivity
 
     private void actionCreate()
     {
-        InputDialog inputDialog=new InputDialog(this,"Create directory","Create")
+        InputDialog inputDialog=new InputDialog(this,"Create","Create directory")
         {
             @Override
             public void onActionClick(String text)
@@ -886,7 +894,13 @@ public class MainActivity extends AppCompatActivity
 
         recyclerAdapter.clearSelection();
 
-        recyclerAdapter.addAll(FileUtils.getChildren(directory));
+        File[] children=FileUtils.getChildren(currentDirectory);
+
+        if(children==null) return;
+
+        if(children.length==0) showMessage("Nothing here");
+
+        recyclerAdapter.addAll(children);
 
         invalidateTitle();
     }

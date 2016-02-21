@@ -24,7 +24,7 @@ public class SettingsActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                finish();
+                finishWrapper();
             }
         });
 
@@ -33,5 +33,10 @@ public class SettingsActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.content_frame,new SettingsFragment()).commit();
 
         setSupportActionBar(toolbar);
+    }
+
+    private void finishWrapper()
+    {
+        finish();
     }
 }

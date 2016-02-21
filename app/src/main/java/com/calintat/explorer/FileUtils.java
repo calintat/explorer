@@ -30,8 +30,6 @@ class FileUtils
         {
             if(src.isDirectory())
             {
-                if(src.getPath().equals(path.getPath())) throw new Exception();
-
                 File directory=createDirectory(path,src.getName());
 
                 for(File file:src.listFiles()) copyFile(file,directory);
@@ -192,15 +190,23 @@ class FileUtils
 
     public static String getDuration(File file)
     {
-        //TODO: format as hh:mm:ss or mm:ss appropriately
-
         try
         {
             MediaMetadataRetriever retriever=new MediaMetadataRetriever();
 
             retriever.setDataSource(file.getPath());
 
-            return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            String metadata=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+
+            int milliseconds=Integer.parseInt(metadata);
+
+            int s=milliseconds/1000%60;
+
+            int m=milliseconds/1000/60%60;
+
+            int h=milliseconds/1000/60/60%24;
+
+            return h!=0 ? String.format("%02d:%02d:%02d",h,m,s) : String.format("%02d:%02d",m,s);
         }
         catch(Exception e)
         {
