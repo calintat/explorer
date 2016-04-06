@@ -1,4 +1,4 @@
-package com.calintat.explorer;
+package com.calintat.explorer.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -23,9 +24,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,10 +34,17 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static com.calintat.explorer.FileUtils.*;
+import com.calintat.explorer.R;
+import com.calintat.explorer.recycler.RecyclerAdapter;
+import com.calintat.explorer.recycler.RecyclerOnItemClickListener;
+import com.calintat.explorer.recycler.RecyclerOnSelectionListener;
+import com.calintat.explorer.ui.InputDialog;
+import com.calintat.explorer.utils.FileUtils;
+import com.calintat.explorer.utils.PreferenceUtils;
+
+import static com.calintat.explorer.utils.FileUtils.*;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -49,17 +55,17 @@ public class MainActivity extends AppCompatActivity
     private static final String EXTRA_NAME="com.calintat.explorer.EXTRA_NAME";
 
     private static final String EXTRA_TYPE="com.calintat.explorer.EXTRA_TYPE";
-    
+
     private CollapsingToolbarLayout toolbarLayout;
 
     private CoordinatorLayout coordinatorLayout;
 
     private DrawerLayout drawerLayout;
-    
+
     private NavigationView navigationView;
 
     private Toolbar toolbar;
-    
+
     private File currentDirectory;
 
     private RecyclerAdapter recyclerAdapter;
@@ -126,7 +132,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions,@NonNull int[] grantResults)
     {
         if(requestCode==0)
         {
@@ -134,21 +140,23 @@ public class MainActivity extends AppCompatActivity
             {
                 String message="App doesn't work without permission";
 
+                View.OnClickListener onClickListener=new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        Intent intent=new Intent();
+
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+
+                        intent.setData(Uri.fromParts("package","com.calintat.explorer",null));
+
+                        startActivity(intent);
+                    }
+                };
+
                 Snackbar.make(coordinatorLayout,message,Snackbar.LENGTH_INDEFINITE)
-                        .setAction("Settings",new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                Intent intent=new Intent();
-
-                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-
-                                intent.setData(Uri.fromParts("package","com.calintat.explorer",null));
-
-                                startActivity(intent);
-                            }
-                        })
+                        .setAction("Settings",onClickListener)
                         .show();
             }
             else loadIntoRecyclerView();
@@ -174,11 +182,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState)
     {
+        recyclerAdapter.select(savedInstanceState.getIntegerArrayList(SAVED_SELECTION));
+
         String path=savedInstanceState.getString(SAVED_DIRECTORY,getInternalStorage().getPath());
 
         if(currentDirectory!=null) setPath(new File(path));
-
-        recyclerAdapter.select(savedInstanceState.getIntegerArrayList(SAVED_SELECTION));
 
         super.onRestoreInstanceState(savedInstanceState);
     }
@@ -259,8 +267,6 @@ public class MainActivity extends AppCompatActivity
             menu.findItem(R.id.action_send).setVisible(count>=1);
 
             menu.findItem(R.id.action_sort).setVisible(count==0);
-
-
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -309,7 +315,7 @@ public class MainActivity extends AppCompatActivity
         if(name!=null)
         {
             recyclerAdapter.addAll(FileUtils.searchFilesName(context,name));
-            
+
             return;
         }
 
@@ -358,6 +364,8 @@ public class MainActivity extends AppCompatActivity
     {
         drawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
 
+        if(drawerLayout==null) return;
+
         if(name!=null || type!=null)
         {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -367,6 +375,8 @@ public class MainActivity extends AppCompatActivity
     private void initFloatingActionButton()
     {
         FloatingActionButton fab=(FloatingActionButton)findViewById(R.id.floating_action_button);
+
+        if(fab==null) return;
 
         fab.setOnClickListener(new View.OnClickListener()
         {
@@ -380,7 +390,7 @@ public class MainActivity extends AppCompatActivity
         if(name!=null || type!=null)
         {
             ViewGroup.LayoutParams layoutParams=fab.getLayoutParams();
-            
+
             ((CoordinatorLayout.LayoutParams)layoutParams).setAnchorId(View.NO_ID);
 
             fab.setLayoutParams(layoutParams);
@@ -392,6 +402,8 @@ public class MainActivity extends AppCompatActivity
     private void initNavigationView()
     {
         navigationView=(NavigationView)findViewById(R.id.navigation_view);
+
+        if(navigationView==null) return;
 
         MenuItem menuItem=navigationView.getMenu().findItem(R.id.navigation_external);
 
@@ -429,14 +441,6 @@ public class MainActivity extends AppCompatActivity
 
                 switch(item.getItemId())
                 {
-                    case R.id.navigation_internal:
-                        setPath(getInternalStorage());
-                        return true;
-
-                    case R.id.navigation_external:
-                        setPath(getExternalStorage());
-                        return true;
-
                     case R.id.navigation_directory_0:
                         setPath(getPublicDirectory("DCIM"));
                         return true;
@@ -485,10 +489,6 @@ public class MainActivity extends AppCompatActivity
 
         recyclerAdapter.setOnSelectionListener(new OnSelectionListener());
 
-        ItemTouchHelper itemTouchHelper=new ItemTouchHelper(new ItemTouchHelperSimpleCallback());
-        
-        recyclerAdapter.setItemTouchHelper(itemTouchHelper);
-
         if(type!=null)
         {
             switch(type)
@@ -518,6 +518,8 @@ public class MainActivity extends AppCompatActivity
 
         RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
 
+        if(recyclerView==null) return;
+
         recyclerView.setAdapter(recyclerAdapter);
     }
 
@@ -528,7 +530,7 @@ public class MainActivity extends AppCompatActivity
         if(recyclerAdapter.anySelected())
         {
             int selectedItemCount=recyclerAdapter.getSelectedItemCount();
-            
+
             toolbarLayout.setTitle(String.format("%s selected",selectedItemCount));
         }
         else if(name!=null)
@@ -668,7 +670,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     try
                     {
-                        for(File file:files) FileUtils.deleteFile(file);
+                        for(File file : files) FileUtils.deleteFile(file);
                     }
                     catch(Exception e)
                     {
@@ -750,7 +752,7 @@ public class MainActivity extends AppCompatActivity
                 setName(text);
             }
         };
-        
+
         inputDialog.show();
     }
 
@@ -780,7 +782,7 @@ public class MainActivity extends AppCompatActivity
 
         ArrayList<Uri> uris=new ArrayList<>();
 
-        for(File file:recyclerAdapter.getSelectedItems())
+        for(File file : recyclerAdapter.getSelectedItems())
         {
             if(file.isFile()) uris.add(Uri.fromFile(file));
         }
@@ -824,7 +826,7 @@ public class MainActivity extends AppCompatActivity
     private void transferFiles(final List<File> files,final Boolean delete)
     {
         String paste=delete ? "moved" : "copied";
-        
+
         String message=String.format("%d items waiting to be %s",files.size(),paste);
 
         View.OnClickListener onClickListener=new View.OnClickListener()
@@ -834,7 +836,7 @@ public class MainActivity extends AppCompatActivity
             {
                 try
                 {
-                    for(File file:files)
+                    for(File file : files)
                     {
                         recyclerAdapter.addAll(FileUtils.copyFile(file,currentDirectory));
 
@@ -894,13 +896,7 @@ public class MainActivity extends AppCompatActivity
 
         recyclerAdapter.clearSelection();
 
-        File[] children=FileUtils.getChildren(currentDirectory);
-
-        if(children==null) return;
-
-        if(children.length==0) showMessage("Nothing here");
-
-        recyclerAdapter.addAll(children);
+        recyclerAdapter.addAll(FileUtils.getChildren(directory));
 
         invalidateTitle();
     }
@@ -931,34 +927,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     //----------------------------------------------------------------------------------------------
-
-    private final class ItemTouchHelperSimpleCallback extends ItemTouchHelper.SimpleCallback
-    {
-        public ItemTouchHelperSimpleCallback()
-        {
-            super(0,ItemTouchHelper.RIGHT);
-        }
-
-        @Override
-        public boolean onMove(RecyclerView recyclerView,ViewHolder viewHolder,ViewHolder target)
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isItemViewSwipeEnabled()
-        {
-            return !recyclerAdapter.anySelected() && recyclerAdapter.getSpanCount()==1;
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder,int direction)
-        {
-            File file=recyclerAdapter.get(viewHolder.getAdapterPosition());
-
-            actionDelete(Collections.singletonList(file));
-        }
-    }
 
     private final class OnItemClickListener implements RecyclerOnItemClickListener
     {

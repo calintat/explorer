@@ -1,4 +1,4 @@
-package com.calintat.explorer;
+package com.calintat.explorer.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.view.View;
 import android.widget.EditText;
 
-abstract class InputDialog extends AlertDialog.Builder
+import com.calintat.explorer.R;
+
+public abstract class InputDialog extends AlertDialog.Builder
 {
     private final EditText editText;
 

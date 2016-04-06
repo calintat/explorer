@@ -1,4 +1,4 @@
-package com.calintat.explorer;
+package com.calintat.explorer.recycler;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

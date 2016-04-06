@@ -1,9 +1,9 @@
-package com.calintat.explorer;
+package com.calintat.explorer.utils;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
 
-class PreferenceUtils
+public class PreferenceUtils
 {
     public static Boolean getBoolean(Context context,String key,Boolean defaultValue)
     {

@@ -1,4 +1,4 @@
-package com.calintat.explorer;
+package com.calintat.explorer.utils;
 
 import android.content.Context;
 import android.content.CursorLoader;
@@ -22,17 +22,83 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-class FileUtils
+import com.calintat.explorer.R;
+
+public class FileUtils
 {
+    public enum FileType
+    {
+        DIRECTORY,MISC_FILE,AUDIO,IMAGE,VIDEO,DOC,PPT,XLS,PDF,TXT,ZIP;
+
+        public static FileType getFileType(File file)
+        {
+            if(file.isDirectory())
+                return FileType.DIRECTORY;
+
+            String mime=FileUtils.getMimeType(file);
+
+            if(mime==null)
+                return FileType.MISC_FILE;
+
+            if(mime.startsWith("audio"))
+                return FileType.AUDIO;
+
+            if(mime.startsWith("image"))
+                return FileType.IMAGE;
+
+            if(mime.startsWith("video"))
+                return FileType.VIDEO;
+
+            if(mime.startsWith("application/ogg"))
+                return FileType.AUDIO;
+
+            if(mime.startsWith("application/msword"))
+                return FileType.DOC;
+
+            if(mime.startsWith("application/vnd.ms-word"))
+                return FileType.DOC;
+
+            if(mime.startsWith("application/vnd.ms-powerpoint"))
+                return FileType.PPT;
+
+            if(mime.startsWith("application/vnd.ms-excel"))
+                return FileType.XLS;
+
+            if(mime.startsWith("application/vnd.openxmlformats-officedocument.wordprocessingml"))
+                return FileType.DOC;
+
+            if(mime.startsWith("application/vnd.openxmlformats-officedocument.presentationml"))
+                return FileType.PPT;
+
+            if(mime.startsWith("application/vnd.openxmlformats-officedocument.spreadsheetml"))
+                return FileType.XLS;
+
+            if(mime.startsWith("application/pdf"))
+                return FileType.PDF;
+
+            if(mime.startsWith("text"))
+                return FileType.TXT;
+
+            if(mime.startsWith("application/zip"))
+                return FileType.ZIP;
+
+            return FileType.MISC_FILE;
+        }
+    }
+
+    //----------------------------------------------------------------------------------------------
+
     public static File copyFile(File src,File path) throws Exception
     {
         try
         {
             if(src.isDirectory())
             {
+                if(src.getPath().equals(path.getPath())) throw new Exception();
+
                 File directory=createDirectory(path,src.getName());
 
-                for(File file:src.listFiles()) copyFile(file,directory);
+                for(File file : src.listFiles()) copyFile(file,directory);
 
                 return directory;
             }
@@ -68,7 +134,7 @@ class FileUtils
     {
         if(file.isDirectory())
         {
-            for(File child:file.listFiles()) deleteFile(child);
+            for(File child : file.listFiles()) deleteFile(child);
         }
 
         if(file.delete()) return file;
@@ -196,17 +262,19 @@ class FileUtils
 
             retriever.setDataSource(file.getPath());
 
-            String metadata=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            String duration=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 
-            int milliseconds=Integer.parseInt(metadata);
+            long milliseconds=Long.parseLong(duration);
 
-            int s=milliseconds/1000%60;
+            long s=milliseconds/1000%60;
 
-            int m=milliseconds/1000/60%60;
+            long m=milliseconds/1000/60%60;
 
-            int h=milliseconds/1000/60/60%24;
+            long h=milliseconds/1000/60/60%24;
 
-            return h!=0 ? String.format("%02d:%02d:%02d",h,m,s) : String.format("%02d:%02d",m,s);
+            if(h==0) return String.format("%02d:%02d",m,s);
+
+            return String.format("%02d:%02d:%02d",h,m,s);
         }
         catch(Exception e)
         {

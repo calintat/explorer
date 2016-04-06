@@ -1,4 +1,4 @@
-package com.calintat.explorer;
+package com.calintat.explorer.recycler;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,8 +13,10 @@ import android.widget.TextView;
 
 import java.io.File;
 
-import static com.calintat.explorer.FileUtils.*;
-import static com.calintat.explorer.PreferenceUtils.*;
+import com.calintat.explorer.R;
+
+import static com.calintat.explorer.utils.FileUtils.*;
+import static com.calintat.explorer.utils.PreferenceUtils.*;
 
 public final class RecyclerViewHolder0 extends RecyclerViewHolder
 {
@@ -72,8 +74,6 @@ public final class RecyclerViewHolder0 extends RecyclerViewHolder
             }
             else
             {
-                //TODO: thumbnail
-
                 int color=ContextCompat.getColor(context,getColorResource(file));
 
                 image.setBackground(getBackground(color));
@@ -102,7 +102,7 @@ public final class RecyclerViewHolder0 extends RecyclerViewHolder
     @Override
     protected void bindName(File file)
     {
-        boolean extension=PreferenceUtils.getBoolean(context,"pref_extension",true);
+        boolean extension=getBoolean(context,"pref_extension",true);
 
         name.setText(extension ? getName(file) : file.getName());
     }
@@ -110,13 +110,13 @@ public final class RecyclerViewHolder0 extends RecyclerViewHolder
     @Override
     protected void bindInfo(File file)
     {
-        date.setText(FileUtils.getLastModified(file));
+        date.setText(getLastModified(file));
 
-        size.setText(FileUtils.getSize(context,file));
+        size.setText(getSize(context,file));
 
-        setVisibility(date,PreferenceUtils.getBoolean(context,"pref_date",true));
+        setVisibility(date,getBoolean(context,"pref_date",true));
 
-        setVisibility(size,PreferenceUtils.getBoolean(context,"pref_size",false));
+        setVisibility(size,getBoolean(context,"pref_size",false));
     }
 
     private ShapeDrawable getBackground(int color)

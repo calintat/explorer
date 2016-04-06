@@ -1,4 +1,4 @@
-package com.calintat.explorer;
+package com.calintat.explorer.recycler;
 
 import android.content.Context;
 import android.media.MediaMetadataRetriever;
@@ -7,10 +7,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.calintat.explorer.R;
 
 import java.io.File;
 
-import static com.calintat.explorer.FileUtils.*;
+import static com.calintat.explorer.utils.FileUtils.*;
+import static com.calintat.explorer.utils.PreferenceUtils.*;
 
 public final class RecyclerViewHolder1 extends RecyclerViewHolder
 {
@@ -69,15 +71,12 @@ public final class RecyclerViewHolder1 extends RecyclerViewHolder
     @Override
     protected void bindName(File file)
     {
-        boolean extension=PreferenceUtils.getBoolean(context,"pref_extension",true);
+        boolean extension=getBoolean(context,"pref_extension",true);
 
         String string=getTitle(file);
 
-        if(string==null || string.isEmpty())
-        {
-            title.setText(extension ? getName(file) : file.getName());
-        }
-        else title.setText(string);
+        title.setText(string!=null && string.isEmpty() ? string
+                : (extension ? getName(file) : file.getName()));
     }
 
     @Override

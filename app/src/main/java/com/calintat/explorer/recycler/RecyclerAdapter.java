@@ -1,10 +1,9 @@
-package com.calintat.explorer;
+package com.calintat.explorer.recycler;
 
 import android.content.Context;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+import com.calintat.explorer.R;
+
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 {
     private final Context context;
 
@@ -27,8 +28,6 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
     private Integer itemLayout;
 
     private Integer spanCount;
-
-    private ItemTouchHelper itemTouchHelper;
 
     private RecyclerOnItemClickListener onItemClickListener;
 
@@ -78,8 +77,6 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
     {
         recyclerView.setLayoutManager(new GridLayoutManager(context,spanCount));
 
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-
         super.onAttachedToRecyclerView(recyclerView);
     }
 
@@ -100,11 +97,6 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
     public void setItemLayout(int itemLayout)
     {
         this.itemLayout=itemLayout;
-    }
-
-    public void setItemTouchHelper(ItemTouchHelper itemTouchHelper)
-    {
-        this.itemTouchHelper=itemTouchHelper;
     }
 
     public void setOnItemClickListener(RecyclerOnItemClickListener onItemClickListener)
@@ -144,14 +136,14 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
         while(items.size()>0) removeItemAt(items.size()-1);
     }
 
-    private void remove(File file)
+    public void remove(File file)
     {
         items.remove(file);
     }
 
     public void removeAll(Collection<File> files)
     {
-        for(File file:files) remove(file);
+        for(File file : files) remove(file);
     }
 
     public void removeItemAt(int index)
@@ -172,7 +164,7 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
         selectedItems.clear();
 
-        for(int i:selectedPositions) notifyItemChanged(i);
+        for(int i : selectedPositions) notifyItemChanged(i);
 
         onSelectionListener.onSelectionChanged();
     }
@@ -193,7 +185,7 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
     {
         selectedItems.clear();
 
-        for(int i:positions)
+        for(int i : positions)
         {
             selectedItems.append(i,true);
 
@@ -231,11 +223,6 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
     public int getSelectedItemCount()
     {
         return selectedItems.size();
-    }
-
-    public int getSpanCount()
-    {
-        return spanCount;
     }
 
     public int indexOf(File file)

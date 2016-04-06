@@ -1,4 +1,4 @@
-package com.calintat.explorer;
+package com.calintat.explorer.recycler;
 
 import android.content.Context;
 import android.view.View;
@@ -6,10 +6,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.calintat.explorer.R;
+import com.calintat.explorer.utils.FileUtils;
+import com.calintat.explorer.utils.PreferenceUtils;
 
 import java.io.File;
 
-import static com.calintat.explorer.FileUtils.*;
+import static com.calintat.explorer.utils.FileUtils.*;
 
 public final class RecyclerViewHolder3 extends RecyclerViewHolder
 {

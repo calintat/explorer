@@ -6,7 +6,8 @@
 
         <CheckBoxPreference
             android:key="pref_icon"
-            android:title="Use circular icons"/>
+            android:title="Use circular icons"
+            android:defaultValue="true" />
 
         <!--<CheckBoxPreference-->
             <!--android:key="pref_thumbnail"-->
@@ -23,17 +24,17 @@
             android:key="pref_extension"
             android:title="Hide extensions"
             android:summary="For known file types"
-            android:defaultValue="true"/>
+            android:defaultValue="true" />
 
         <CheckBoxPreference
             android:key="pref_date"
             android:title="Show last modified"
-            android:defaultValue="true"/>
+            android:defaultValue="true" />
 
         <CheckBoxPreference
             android:key="pref_size"
             android:title="Show file sizes"
-            android:defaultValue="true"/>
+            android:defaultValue="false" />
 
     </PreferenceCategory>
 

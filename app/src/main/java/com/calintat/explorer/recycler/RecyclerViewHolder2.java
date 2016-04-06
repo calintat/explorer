@@ -1,4 +1,4 @@
-package com.calintat.explorer;
+package com.calintat.explorer.recycler;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,10 +11,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.calintat.explorer.R;
+import com.calintat.explorer.utils.FileUtils;
+import com.calintat.explorer.utils.PreferenceUtils;
 
 import java.io.File;
 
-import static com.calintat.explorer.FileUtils.*;
+import static com.calintat.explorer.utils.FileUtils.*;
 
 public final class RecyclerViewHolder2 extends RecyclerViewHolder
 {
@@ -77,5 +80,4 @@ public final class RecyclerViewHolder2 extends RecyclerViewHolder
 
         date.setText(FileUtils.getLastModified(file));
     }
-
 }

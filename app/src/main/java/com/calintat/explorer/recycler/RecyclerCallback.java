@@ -1,4 +1,4 @@
-package com.calintat.explorer;
+package com.calintat.explorer.recycler;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,7 +6,8 @@ import android.support.v7.widget.util.SortedListAdapterCallback;
 
 import java.io.File;
 
-import static com.calintat.explorer.FileUtils.*;
+import com.calintat.explorer.utils.FileUtils;
+import com.calintat.explorer.utils.PreferenceUtils;
 
 class RecyclerCallback extends SortedListAdapterCallback<File>
 {
@@ -31,13 +32,13 @@ class RecyclerCallback extends SortedListAdapterCallback<File>
         switch(criteria)
         {
             case 0:
-                return compareName(file1,file2);
+                return FileUtils.compareName(file1,file2);
 
             case 1:
-                return compareDate(file1,file2);
+                return FileUtils.compareDate(file1,file2);
 
             case 2:
-                return compareSize(file1,file2);
+                return FileUtils.compareSize(file1,file2);
 
             default:
                 return 0;

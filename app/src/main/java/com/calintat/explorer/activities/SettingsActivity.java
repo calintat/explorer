@@ -1,10 +1,13 @@
-package com.calintat.explorer;
+package com.calintat.explorer.activities;
 
 import android.app.FragmentTransaction;
+import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
+import com.calintat.explorer.R;
 
 public class SettingsActivity extends AppCompatActivity
 {
@@ -17,16 +20,20 @@ public class SettingsActivity extends AppCompatActivity
 
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
 
-        toolbar.setNavigationIcon(R.drawable.ic_back);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+        if(toolbar!=null)
         {
-            @Override
-            public void onClick(View view)
+            toolbar.setNavigationIcon(R.drawable.ic_back);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener()
             {
-                finishWrapper();
-            }
-        });
+                @Override
+                public void onClick(View view)
+                {
+                    finish();
+                }
+            });
+
+        }
 
         FragmentTransaction fragmentTransaction=getFragmentManager().beginTransaction();
 
@@ -35,8 +42,14 @@ public class SettingsActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
     }
 
-    private void finishWrapper()
+    public static class SettingsFragment extends PreferenceFragment
     {
-        finish();
+        @Override
+        public void onCreate(Bundle savedInstanceState)
+        {
+            super.onCreate(savedInstanceState);
+
+            addPreferencesFromResource(R.xml.preferences);
+        }
     }
 }
