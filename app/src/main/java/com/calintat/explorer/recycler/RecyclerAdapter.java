@@ -9,11 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.calintat.explorer.R;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import com.calintat.explorer.R;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 {
@@ -37,35 +37,35 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
     public RecyclerAdapter(Context context)
     {
-        this.context=context;
+        this.context = context;
 
-        this.recyclerCallback=new RecyclerCallback(context,this);
+        this.recyclerCallback = new RecyclerCallback(context, this);
 
-        this.items=new SortedList<>(File.class,recyclerCallback);
+        this.items = new SortedList<>(File.class, recyclerCallback);
 
-        this.selectedItems=new SparseBooleanArray();
+        this.selectedItems = new SparseBooleanArray();
     }
 
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent,int viewType)
+    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView=LayoutInflater.from(context).inflate(itemLayout,parent,false);
+        View itemView = LayoutInflater.from(context).inflate(itemLayout, parent, false);
 
-        switch(itemLayout)
+        switch (itemLayout)
         {
             case R.layout.list_item_0:
-                return new RecyclerViewHolder0(context,onItemClickListener,itemView);
+                return new RecyclerViewHolder0(context, onItemClickListener, itemView);
 
             case R.layout.list_item_1:
-                return new RecyclerViewHolder1(context,onItemClickListener,itemView);
+                return new RecyclerViewHolder1(context, onItemClickListener, itemView);
 
             case R.layout.list_item_2:
-                return new RecyclerViewHolder2(context,onItemClickListener,itemView);
+                return new RecyclerViewHolder2(context, onItemClickListener, itemView);
 
             case R.layout.list_item_3:
-                return new RecyclerViewHolder3(context,onItemClickListener,itemView);
+                return new RecyclerViewHolder3(context, onItemClickListener, itemView);
 
             default:
                 return null;
@@ -75,15 +75,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView)
     {
-        recyclerView.setLayoutManager(new GridLayoutManager(context,spanCount));
+        recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount));
 
         super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewHolder holder,int position)
+    public void onBindViewHolder(RecyclerViewHolder holder, int position)
     {
-        holder.setData(get(position),getSelected(position));
+        holder.setData(get(position), getSelected(position));
     }
 
     @Override
@@ -96,22 +96,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
     public void setItemLayout(int itemLayout)
     {
-        this.itemLayout=itemLayout;
+        this.itemLayout = itemLayout;
     }
 
     public void setOnItemClickListener(RecyclerOnItemClickListener onItemClickListener)
     {
-        this.onItemClickListener=onItemClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
     public void setOnSelectionListener(RecyclerOnSelectionListener onSelectionListener)
     {
-        this.onSelectionListener=onSelectionListener;
+        this.onSelectionListener = onSelectionListener;
     }
 
     public void setSpanCount(int spanCount)
     {
-        this.spanCount=spanCount;
+        this.spanCount = spanCount;
     }
 
     //----------------------------------------------------------------------------------------------
@@ -133,7 +133,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
     public void clear()
     {
-        while(items.size()>0) removeItemAt(items.size()-1);
+        while (items.size() > 0) removeItemAt(items.size() - 1);
+    }
+
+    public void refresh()
+    {
+        for (int i = 0; i < getItemCount(); i++)
+        {
+            notifyItemChanged(i);
+        }
     }
 
     public void remove(File file)
@@ -143,7 +151,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
     public void removeAll(Collection<File> files)
     {
-        for(File file : files) remove(file);
+        for (File file : files) remove(file);
     }
 
     public void removeItemAt(int index)
@@ -151,29 +159,29 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
         items.removeItemAt(index);
     }
 
-    public void updateItemAt(int index,File file)
+    public void updateItemAt(int index, File file)
     {
-        items.updateItemAt(index,file);
+        items.updateItemAt(index, file);
     }
 
     //----------------------------------------------------------------------------------------------
 
     public void clearSelection()
     {
-        ArrayList<Integer> selectedPositions=getSelectedPositions();
+        ArrayList<Integer> selectedPositions = getSelectedPositions();
 
         selectedItems.clear();
 
-        for(int i : selectedPositions) notifyItemChanged(i);
+        for (int i : selectedPositions) notifyItemChanged(i);
 
         onSelectionListener.onSelectionChanged();
     }
 
     public void update(int criteria)
     {
-        if(recyclerCallback.update(criteria))
+        if (recyclerCallback.update(criteria))
         {
-            ArrayList<File> list=getItems();
+            ArrayList<File> list = getItems();
 
             clear();
 
@@ -185,9 +193,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
     {
         selectedItems.clear();
 
-        for(int i : positions)
+        for (int i : positions)
         {
-            selectedItems.append(i,true);
+            selectedItems.append(i, true);
 
             notifyItemChanged(i);
         }
@@ -197,9 +205,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
     public void toggle(int position)
     {
-        if(getSelected(position)) selectedItems.delete(position);
+        if (getSelected(position)) selectedItems.delete(position);
 
-        else selectedItems.append(position,true);
+        else selectedItems.append(position, true);
 
         notifyItemChanged(position);
 
@@ -210,7 +218,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
     public boolean anySelected()
     {
-        return selectedItems.size()>0;
+        return selectedItems.size() > 0;
     }
 
     private boolean getSelected(int position)
@@ -234,11 +242,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
     public ArrayList<File> getSelectedItems()
     {
-        ArrayList<File> list=new ArrayList<>();
+        ArrayList<File> list = new ArrayList<>();
 
-        for(int i=0;i<=getItemCount()-1;i++)
+        for (int i = 0; i < getItemCount(); i++)
         {
-            if(getSelected(i)) list.add(get(i));
+            if (getSelected(i)) list.add(get(i));
         }
 
         return list;
@@ -246,9 +254,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
     private ArrayList<File> getItems()
     {
-        ArrayList<File> list=new ArrayList<>();
+        ArrayList<File> list = new ArrayList<>();
 
-        for(int i=0;i<=getItemCount()-1;i++)
+        for (int i = 0; i < getItemCount(); i++)
         {
             list.add(get(i));
         }
@@ -258,11 +266,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
 
     public ArrayList<Integer> getSelectedPositions()
     {
-        ArrayList<Integer> list=new ArrayList<>();
+        ArrayList<Integer> list = new ArrayList<>();
 
-        for(int i=0;i<=getItemCount()-1;i++)
+        for (int i = 0; i < getItemCount(); i++)
         {
-            if(getSelected(i)) list.add(i);
+            if (getSelected(i)) list.add(i);
         }
 
         return list;

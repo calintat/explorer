@@ -23,11 +23,11 @@ public abstract class RecyclerViewHolder extends RecyclerView.ViewHolder
 
     //----------------------------------------------------------------------------------------------
 
-    RecyclerViewHolder(Context context,RecyclerOnItemClickListener listener,View view)
+    RecyclerViewHolder(Context context, RecyclerOnItemClickListener listener, View view)
     {
         super(view);
 
-        this.context=context;
+        this.context = context;
 
         setClickListener(listener);
 
@@ -46,7 +46,7 @@ public abstract class RecyclerViewHolder extends RecyclerView.ViewHolder
 
     protected abstract void loadInfo();
 
-    protected abstract void bindIcon(File file,Boolean selected);
+    protected abstract void bindIcon(File file, Boolean selected);
 
     protected abstract void bindName(File file);
 
@@ -56,44 +56,16 @@ public abstract class RecyclerViewHolder extends RecyclerView.ViewHolder
 
     private void setClickListener(final RecyclerOnItemClickListener listener)
     {
-        this.onActionClickListener=new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                listener.onItemLongClick(getAdapterPosition());
-            }
-        };
+        this.onActionClickListener = v -> listener.onItemLongClick(getAdapterPosition());
 
-        this.onActionLongClickListener=new View.OnLongClickListener()
-        {
-            @Override
-            public boolean onLongClick(View v)
-            {
-                return listener.onItemLongClick(getAdapterPosition());
-            }
-        };
+        this.onActionLongClickListener = v -> listener.onItemLongClick(getAdapterPosition());
 
-        this.onClickListener=new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                listener.onItemClick(getAdapterPosition());
-            }
-        };
+        this.onClickListener = v -> listener.onItemClick(getAdapterPosition());
 
-        this.onLongClickListener=new View.OnLongClickListener()
-        {
-            @Override
-            public boolean onLongClick(View v)
-            {
-                return listener.onItemLongClick(getAdapterPosition());
-            }
-        };
+        this.onLongClickListener = v -> listener.onItemLongClick(getAdapterPosition());
     }
 
-    void setData(final File file,Boolean selected)
+    void setData(final File file, Boolean selected)
     {
         itemView.setOnClickListener(onClickListener);
 
@@ -101,14 +73,14 @@ public abstract class RecyclerViewHolder extends RecyclerView.ViewHolder
 
         itemView.setSelected(selected);
 
-        bindIcon(file,selected);
+        bindIcon(file, selected);
 
         bindName(file);
 
         bindInfo(file);
     }
 
-    void setVisibility(View view,Boolean visibility)
+    void setVisibility(View view, Boolean visibility)
     {
         view.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }

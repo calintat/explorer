@@ -11,9 +11,10 @@ import android.text.format.DateFormat;
 import android.text.format.Formatter;
 import android.webkit.MimeTypeMap;
 
+import com.calintat.explorer.R;
+
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
@@ -22,64 +23,62 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.calintat.explorer.R;
-
 public class FileUtils
 {
     public enum FileType
     {
-        DIRECTORY,MISC_FILE,AUDIO,IMAGE,VIDEO,DOC,PPT,XLS,PDF,TXT,ZIP;
+        DIRECTORY, MISC_FILE, AUDIO, IMAGE, VIDEO, DOC, PPT, XLS, PDF, TXT, ZIP;
 
         public static FileType getFileType(File file)
         {
-            if(file.isDirectory())
+            if (file.isDirectory())
                 return FileType.DIRECTORY;
 
-            String mime=FileUtils.getMimeType(file);
+            String mime = FileUtils.getMimeType(file);
 
-            if(mime==null)
+            if (mime == null)
                 return FileType.MISC_FILE;
 
-            if(mime.startsWith("audio"))
+            if (mime.startsWith("audio"))
                 return FileType.AUDIO;
 
-            if(mime.startsWith("image"))
+            if (mime.startsWith("image"))
                 return FileType.IMAGE;
 
-            if(mime.startsWith("video"))
+            if (mime.startsWith("video"))
                 return FileType.VIDEO;
 
-            if(mime.startsWith("application/ogg"))
+            if (mime.startsWith("application/ogg"))
                 return FileType.AUDIO;
 
-            if(mime.startsWith("application/msword"))
+            if (mime.startsWith("application/msword"))
                 return FileType.DOC;
 
-            if(mime.startsWith("application/vnd.ms-word"))
+            if (mime.startsWith("application/vnd.ms-word"))
                 return FileType.DOC;
 
-            if(mime.startsWith("application/vnd.ms-powerpoint"))
+            if (mime.startsWith("application/vnd.ms-powerpoint"))
                 return FileType.PPT;
 
-            if(mime.startsWith("application/vnd.ms-excel"))
+            if (mime.startsWith("application/vnd.ms-excel"))
                 return FileType.XLS;
 
-            if(mime.startsWith("application/vnd.openxmlformats-officedocument.wordprocessingml"))
+            if (mime.startsWith("application/vnd.openxmlformats-officedocument.wordprocessingml"))
                 return FileType.DOC;
 
-            if(mime.startsWith("application/vnd.openxmlformats-officedocument.presentationml"))
+            if (mime.startsWith("application/vnd.openxmlformats-officedocument.presentationml"))
                 return FileType.PPT;
 
-            if(mime.startsWith("application/vnd.openxmlformats-officedocument.spreadsheetml"))
+            if (mime.startsWith("application/vnd.openxmlformats-officedocument.spreadsheetml"))
                 return FileType.XLS;
 
-            if(mime.startsWith("application/pdf"))
+            if (mime.startsWith("application/pdf"))
                 return FileType.PDF;
 
-            if(mime.startsWith("text"))
+            if (mime.startsWith("text"))
                 return FileType.TXT;
 
-            if(mime.startsWith("application/zip"))
+            if (mime.startsWith("application/zip"))
                 return FileType.ZIP;
 
             return FileType.MISC_FILE;
@@ -88,104 +87,104 @@ public class FileUtils
 
     //----------------------------------------------------------------------------------------------
 
-    public static File copyFile(File src,File path) throws Exception
+    public static File copyFile(File src, File path) throws Exception
     {
         try
         {
-            if(src.isDirectory())
+            if (src.isDirectory())
             {
-                if(src.getPath().equals(path.getPath())) throw new Exception();
+                if (src.getPath().equals(path.getPath())) throw new Exception();
 
-                File directory=createDirectory(path,src.getName());
+                File directory = createDirectory(path, src.getName());
 
-                for(File file : src.listFiles()) copyFile(file,directory);
+                for (File file : src.listFiles()) copyFile(file, directory);
 
                 return directory;
             }
             else
             {
-                File file=new File(path,src.getName());
+                File file = new File(path, src.getName());
 
-                FileChannel channel=new FileInputStream(src).getChannel();
+                FileChannel channel = new FileInputStream(src).getChannel();
 
-                channel.transferTo(0,channel.size(),new FileOutputStream(file).getChannel());
+                channel.transferTo(0, channel.size(), new FileOutputStream(file).getChannel());
 
                 return file;
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            throw new Exception(String.format("Error copying %s",src.getName()));
+            throw new Exception(String.format("Error copying %s", src.getName()));
         }
     }
 
-    public static File createDirectory(File path,String name) throws Exception
+    public static File createDirectory(File path, String name) throws Exception
     {
-        File directory=new File(path,name);
+        File directory = new File(path, name);
 
-        if(directory.mkdirs()) return directory;
+        if (directory.mkdirs()) return directory;
 
-        if(directory.exists()) throw new Exception(String.format("%s already exists",name));
+        if (directory.exists()) throw new Exception(String.format("%s already exists", name));
 
-        throw new Exception(String.format("Error creating %s",name));
+        throw new Exception(String.format("Error creating %s", name));
     }
 
     public static File deleteFile(File file) throws Exception
     {
-        if(file.isDirectory())
+        if (file.isDirectory())
         {
-            for(File child : file.listFiles()) deleteFile(child);
+            for (File child : file.listFiles()) deleteFile(child);
         }
 
-        if(file.delete()) return file;
+        if (file.delete()) return file;
 
-        throw new Exception(String.format("Error deleting %s",file.getName()));
+        throw new Exception(String.format("Error deleting %s", file.getName()));
     }
 
-    public static File renameFile(File file,String name) throws Exception
+    public static File renameFile(File file, String name) throws Exception
     {
-        String extension=getExtension(file.getName());
+        String extension = getExtension(file.getName());
 
-        if(!extension.isEmpty()) name+="."+extension;
+        if (!extension.isEmpty()) name += "." + extension;
 
-        File newFile=new File(file.getParent(),name);
+        File newFile = new File(file.getParent(), name);
 
-        if(file.renameTo(newFile)) return newFile;
+        if (file.renameTo(newFile)) return newFile;
 
-        throw new Exception(String.format("Error renaming %s",file.getName()));
+        throw new Exception(String.format("Error renaming %s", file.getName()));
     }
 
     public static File unzip(File zip) throws Exception
     {
-        File directory=createDirectory(zip.getParentFile(),removeExtension(zip.getName()));
+        File directory = createDirectory(zip.getParentFile(), removeExtension(zip.getName()));
 
-        FileInputStream fileInputStream=new FileInputStream(zip);
+        FileInputStream fileInputStream = new FileInputStream(zip);
 
-        BufferedInputStream bufferedInputStream=new BufferedInputStream(fileInputStream);
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
 
-        try(ZipInputStream zipInputStream=new ZipInputStream(bufferedInputStream))
+        try (ZipInputStream zipInputStream = new ZipInputStream(bufferedInputStream))
         {
             ZipEntry zipEntry;
 
-            while((zipEntry=zipInputStream.getNextEntry())!=null)
+            while ((zipEntry = zipInputStream.getNextEntry()) != null)
             {
-                byte[] buffer=new byte[1024];
+                byte[] buffer = new byte[1024];
 
-                File file=new File(directory,zipEntry.getName());
+                File file = new File(directory, zipEntry.getName());
 
-                if(zipEntry.isDirectory())
+                if (zipEntry.isDirectory())
                 {
-                    if(!file.mkdirs()) throw new Exception("Error uncompressing");
+                    if (!file.mkdirs()) throw new Exception("Error uncompressing");
                 }
                 else
                 {
                     int count;
 
-                    try(FileOutputStream fileOutputStream=new FileOutputStream(file))
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(file))
                     {
-                        while((count=zipInputStream.read(buffer))!=-1)
+                        while ((count = zipInputStream.read(buffer)) != -1)
                         {
-                            fileOutputStream.write(buffer,0,count);
+                            fileOutputStream.write(buffer, 0, count);
                         }
                     }
                 }
@@ -208,9 +207,9 @@ public class FileUtils
     {
         //returns the path to the external storage or null if it doesn't exist
 
-        String path=System.getenv("SECONDARY_STORAGE");
+        String path = System.getenv("SECONDARY_STORAGE");
 
-        return path!=null ? new File(path) : null;
+        return path != null ? new File(path) : null;
     }
 
     public static File getPublicDirectory(String type)
@@ -226,13 +225,13 @@ public class FileUtils
     {
         try
         {
-            MediaMetadataRetriever retriever=new MediaMetadataRetriever();
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
             retriever.setDataSource(file.getPath());
 
             return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             return null;
         }
@@ -242,13 +241,13 @@ public class FileUtils
     {
         try
         {
-            MediaMetadataRetriever retriever=new MediaMetadataRetriever();
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
             retriever.setDataSource(file.getPath());
 
             return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             return null;
         }
@@ -258,25 +257,25 @@ public class FileUtils
     {
         try
         {
-            MediaMetadataRetriever retriever=new MediaMetadataRetriever();
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
             retriever.setDataSource(file.getPath());
 
-            String duration=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 
-            long milliseconds=Long.parseLong(duration);
+            long milliseconds = Long.parseLong(duration);
 
-            long s=milliseconds/1000%60;
+            long s = milliseconds / 1000 % 60;
 
-            long m=milliseconds/1000/60%60;
+            long m = milliseconds / 1000 / 60 % 60;
 
-            long h=milliseconds/1000/60/60%24;
+            long h = milliseconds / 1000 / 60 / 60 % 24;
 
-            if(h==0) return String.format("%02d:%02d",m,s);
+            if (h == 0) return String.format("%02d:%02d", m, s);
 
-            return String.format("%02d:%02d:%02d",h,m,s);
+            return String.format("%02d:%02d:%02d", h, m, s);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             return null;
         }
@@ -286,7 +285,7 @@ public class FileUtils
     {
         //returns the last modified date of the given file as a formatted string
 
-        return DateFormat.format("dd MMM yyy",new Date(file.lastModified())).toString();
+        return DateFormat.format("dd MMM yyy", new Date(file.lastModified())).toString();
     }
 
     public static String getMimeType(File file)
@@ -300,7 +299,7 @@ public class FileUtils
     {
         //returns the name of the file hiding extensions of known file types
 
-        switch(FileType.getFileType(file))
+        switch (FileType.getFileType(file))
         {
             case DIRECTORY:
                 return file.getName();
@@ -317,60 +316,60 @@ public class FileUtils
     {
         //returns the path of the given file or null if the file is null
 
-        return file!=null ? file.getPath() : null;
+        return file != null ? file.getPath() : null;
     }
 
-    public static String getSize(Context context,File file)
+    public static String getSize(Context context, File file)
     {
-        if(file.isDirectory())
+        if (file.isDirectory())
         {
-            File[] children=getChildren(file);
+            File[] children = getChildren(file);
 
-            if(children==null) return null;
+            if (children == null) return null;
 
-            return String.format("%s items",children.length);
+            return String.format("%s items", children.length);
         }
         else
         {
-            return Formatter.formatShortFileSize(context,file.length());
+            return Formatter.formatShortFileSize(context, file.length());
         }
     }
 
     public static String getStorageUsage(Context context)
     {
-        File internal=getInternalStorage();
+        File internal = getInternalStorage();
 
-        File external=getExternalStorage();
+        File external = getExternalStorage();
 
-        long f=internal.getFreeSpace();
+        long f = internal.getFreeSpace();
 
-        long t=internal.getTotalSpace();
+        long t = internal.getTotalSpace();
 
-        if(external!=null)
+        if (external != null)
         {
-            f+=external.getFreeSpace();
+            f += external.getFreeSpace();
 
-            t+=external.getTotalSpace();
+            t += external.getTotalSpace();
         }
 
-        String use=Formatter.formatShortFileSize(context,t-f);
+        String use = Formatter.formatShortFileSize(context, t - f);
 
-        String tot=Formatter.formatShortFileSize(context,t);
+        String tot = Formatter.formatShortFileSize(context, t);
 
-        return String.format("%s used of %s",use,tot);
+        return String.format("%s used of %s", use, tot);
     }
 
     public static String getTitle(File file)
     {
         try
         {
-            MediaMetadataRetriever retriever=new MediaMetadataRetriever();
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
             retriever.setDataSource(file.getPath());
 
             return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             return null;
         }
@@ -382,50 +381,50 @@ public class FileUtils
     {
         //returns the file extension or an empty string iff there is no extension
 
-        return filename.contains(".") ? filename.substring(filename.lastIndexOf(".")+1) : "";
+        return filename.contains(".") ? filename.substring(filename.lastIndexOf(".") + 1) : "";
     }
 
     public static String removeExtension(String filename)
     {
-        int index=filename.lastIndexOf(".");
+        int index = filename.lastIndexOf(".");
 
-        return index!=-1 ? filename.substring(0,index) : filename;
+        return index != -1 ? filename.substring(0, index) : filename;
     }
 
     //----------------------------------------------------------------------------------------------
 
-    public static int compareDate(File file1,File file2)
+    public static int compareDate(File file1, File file2)
     {
-        long lastModified1=file1.lastModified();
+        long lastModified1 = file1.lastModified();
 
-        long lastModified2=file2.lastModified();
+        long lastModified2 = file2.lastModified();
 
-        return Long.compare(lastModified2,lastModified1);
+        return Long.compare(lastModified2, lastModified1);
     }
 
-    public static int compareName(File file1,File file2)
+    public static int compareName(File file1, File file2)
     {
-        String name1=file1.getName();
+        String name1 = file1.getName();
 
-        String name2=file2.getName();
+        String name2 = file2.getName();
 
         return name1.compareToIgnoreCase(name2);
     }
 
-    public static int compareSize(File file1,File file2)
+    public static int compareSize(File file1, File file2)
     {
-        long length1=file1.length();
+        long length1 = file1.length();
 
-        long length2=file2.length();
+        long length2 = file2.length();
 
-        return Long.compare(length2,length1);
+        return Long.compare(length2, length1);
     }
 
     //----------------------------------------------------------------------------------------------
 
     public static int getColorResource(File file)
     {
-        switch(FileType.getFileType(file))
+        switch (FileType.getFileType(file))
         {
             case DIRECTORY:
                 return R.color.directory;
@@ -467,7 +466,7 @@ public class FileUtils
 
     public static int getImageResource(File file)
     {
-        switch(FileType.getFileType(file))
+        switch (FileType.getFileType(file))
         {
             case DIRECTORY:
                 return R.drawable.ic_directory;
@@ -511,46 +510,39 @@ public class FileUtils
 
     public static boolean isStorage(File dir)
     {
-        return dir==null || dir.equals(getInternalStorage()) || dir.equals(getExternalStorage());
+        return dir == null || dir.equals(getInternalStorage()) || dir.equals(getExternalStorage());
     }
 
     //----------------------------------------------------------------------------------------------
 
     public static File[] getChildren(File directory)
     {
-        if(!directory.canRead()) return null;
+        if (!directory.canRead()) return null;
 
-        return directory.listFiles(new FileFilter()
-        {
-            @Override
-            public boolean accept(File pathname)
-            {
-                return pathname.exists() && !pathname.isHidden();
-            }
-        });
+        return directory.listFiles(pathname -> pathname.exists() && !pathname.isHidden());
     }
 
     //----------------------------------------------------------------------------------------------
 
     public static ArrayList<File> getAudioLibrary(Context context)
     {
-        ArrayList<File> list=new ArrayList<>();
+        ArrayList<File> list = new ArrayList<>();
 
-        Uri uri=MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
-        String data[]=new String[]{MediaStore.Audio.Media.DATA};
+        String data[] = new String[]{MediaStore.Audio.Media.DATA};
 
-        String selection=MediaStore.Audio.Media.IS_MUSIC;
+        String selection = MediaStore.Audio.Media.IS_MUSIC;
 
-        Cursor cursor=new CursorLoader(context,uri,data,selection,null,null).loadInBackground();
+        Cursor cursor = new CursorLoader(context, uri, data, selection, null, null).loadInBackground();
 
-        if(cursor!=null)
+        if (cursor != null)
         {
-            while(cursor.moveToNext())
+            while (cursor.moveToNext())
             {
-                File file=new File(cursor.getString(cursor.getColumnIndex(data[0])));
+                File file = new File(cursor.getString(cursor.getColumnIndex(data[0])));
 
-                if(file.exists()) list.add(file);
+                if (file.exists()) list.add(file);
             }
 
             cursor.close();
@@ -561,21 +553,21 @@ public class FileUtils
 
     public static ArrayList<File> getImageLibrary(Context context)
     {
-        ArrayList<File> list=new ArrayList<>();
+        ArrayList<File> list = new ArrayList<>();
 
-        Uri uri=MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-        String data[]=new String[]{MediaStore.Images.Media.DATA};
+        String data[] = new String[]{MediaStore.Images.Media.DATA};
 
-        Cursor cursor=new CursorLoader(context,uri,data,null,null,null).loadInBackground();
+        Cursor cursor = new CursorLoader(context, uri, data, null, null, null).loadInBackground();
 
-        if(cursor!=null)
+        if (cursor != null)
         {
-            while(cursor.moveToNext())
+            while (cursor.moveToNext())
             {
-                File file=new File(cursor.getString(cursor.getColumnIndex(data[0])));
+                File file = new File(cursor.getString(cursor.getColumnIndex(data[0])));
 
-                if(file.exists()) list.add(file);
+                if (file.exists()) list.add(file);
             }
 
             cursor.close();
@@ -586,21 +578,21 @@ public class FileUtils
 
     public static ArrayList<File> getVideoLibrary(Context context)
     {
-        ArrayList<File> list=new ArrayList<>();
+        ArrayList<File> list = new ArrayList<>();
 
-        Uri uri=MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
 
-        String data[]=new String[]{MediaStore.Video.Media.DATA};
+        String data[] = new String[]{MediaStore.Video.Media.DATA};
 
-        Cursor cursor=new CursorLoader(context,uri,data,null,null,null).loadInBackground();
+        Cursor cursor = new CursorLoader(context, uri, data, null, null, null).loadInBackground();
 
-        if(cursor!=null)
+        if (cursor != null)
         {
-            while(cursor.moveToNext())
+            while (cursor.moveToNext())
             {
-                File file=new File(cursor.getString(cursor.getColumnIndex(data[0])));
+                File file = new File(cursor.getString(cursor.getColumnIndex(data[0])));
 
-                if(file.exists()) list.add(file);
+                if (file.exists()) list.add(file);
             }
 
             cursor.close();
@@ -609,23 +601,23 @@ public class FileUtils
         return list;
     }
 
-    public static ArrayList<File> searchFilesName(Context context,String name)
+    public static ArrayList<File> searchFilesName(Context context, String name)
     {
-        ArrayList<File> list=new ArrayList<>();
+        ArrayList<File> list = new ArrayList<>();
 
-        Uri uri=MediaStore.Files.getContentUri("external");
+        Uri uri = MediaStore.Files.getContentUri("external");
 
-        String data[]=new String[]{MediaStore.Files.FileColumns.DATA};
+        String data[] = new String[]{MediaStore.Files.FileColumns.DATA};
 
-        Cursor cursor=new CursorLoader(context,uri,data,null,null,null).loadInBackground();
+        Cursor cursor = new CursorLoader(context, uri, data, null, null, null).loadInBackground();
 
-        if(cursor!=null)
+        if (cursor != null)
         {
-            while(cursor.moveToNext())
+            while (cursor.moveToNext())
             {
-                File file=new File(cursor.getString(cursor.getColumnIndex(data[0])));
+                File file = new File(cursor.getString(cursor.getColumnIndex(data[0])));
 
-                if(file.exists() && file.getName().startsWith(name)) list.add(file);
+                if (file.exists() && file.getName().startsWith(name)) list.add(file);
             }
 
             cursor.close();

@@ -12,7 +12,7 @@ import com.calintat.explorer.utils.PreferenceUtils;
 
 import java.io.File;
 
-import static com.calintat.explorer.utils.FileUtils.*;
+import static com.calintat.explorer.utils.FileUtils.getName;
 
 public final class RecyclerViewHolder3 extends RecyclerViewHolder
 {
@@ -20,31 +20,31 @@ public final class RecyclerViewHolder3 extends RecyclerViewHolder
 
     private TextView duration;
 
-    RecyclerViewHolder3(Context context,RecyclerOnItemClickListener listener,View view)
+    RecyclerViewHolder3(Context context, RecyclerOnItemClickListener listener, View view)
     {
-        super(context,listener,view);
+        super(context, listener, view);
     }
 
     @Override
     protected void loadIcon()
     {
-        image=(ImageView)itemView.findViewById(R.id.list_item_image);
+        image = (ImageView) itemView.findViewById(R.id.list_item_image);
     }
 
     @Override
     protected void loadName()
     {
-        name=(TextView)itemView.findViewById(R.id.list_item_name);
+        name = (TextView) itemView.findViewById(R.id.list_item_name);
     }
 
     @Override
     protected void loadInfo()
     {
-        duration=(TextView)itemView.findViewById(R.id.list_item_duration);
+        duration = (TextView) itemView.findViewById(R.id.list_item_duration);
     }
 
     @Override
-    protected void bindIcon(File file,Boolean selected)
+    protected void bindIcon(File file, Boolean selected)
     {
         Glide.with(context).load(file).into(image);
     }
@@ -52,7 +52,7 @@ public final class RecyclerViewHolder3 extends RecyclerViewHolder
     @Override
     protected void bindName(File file)
     {
-        boolean extension=PreferenceUtils.getBoolean(context,"pref_extension",true);
+        boolean extension = PreferenceUtils.getBoolean(context, "pref_extension", true);
 
         name.setText(extension ? getName(file) : file.getName());
     }
