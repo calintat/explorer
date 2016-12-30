@@ -1,19 +1,30 @@
 # Explorer
-Simple file manager with Material Design
 
-#####COMPLETELY FREE
-no ads or in-app purchases
+To install on an Android device, go to the [Play Store](https://play.google.com/store/apps/details?id=com.calintat.explorer).
 
-#####MATERIAL DESIGN
-clean and colourful user interface
+I would greatly appreciate it if you could rate the app.
 
-#####ALL THE BASIC FEATURES YOU MIGHT NEED
-create, delete, rename, copy, move and share files
+Features
+--------
 
-#####MEDIA LIBRARY
-view all your media files in one place
+Clean and colourful user interface
 
-#####EXTERNAL STORAGE SUPPORT
-manager the files on your sd card
+Completely free with no ads
 
-<a href='https://play.google.com/store/apps/details?id=com.calintat.explorer&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="72"/></a>
+External storage support
+
+Create, delete, rename, copy, move and share your files
+
+Archive support for zip files
+
+View all your media files in one place
+
+Suggestions
+-----------
+
+Please feel free to email me with suggestions on how to make the app better.
+
+Note that I might not be able to respond to all your emails but I will consider your ideas.
+
+Want to help translate Explorer to your language?
+Just email me the translated [strings.xml](app/src/main/res/values/strings.xml) file.
