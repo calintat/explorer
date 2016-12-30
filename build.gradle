@@ -1,22 +1,22 @@
-buildscript
-{
-    repositories
-    {
+buildscript {
+
+    repositories {
+
         jcenter()
 
         mavenCentral()
     }
 
-    dependencies
-    {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+    dependencies {
+
+        classpath 'com.android.tools.build:gradle:2.2.3'
     }
 }
 
-allprojects
-{
-    repositories
-    {
+allprojects {
+
+    repositories {
+
         jcenter()
 
         mavenCentral()
