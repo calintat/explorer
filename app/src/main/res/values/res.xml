@@ -1,8 +1,32 @@
 <resources>
 
+    <dimen name="app_bar_height">156dp</dimen>
+
+    <dimen name="avatar_size">40dp</dimen>
+
+    <dimen name="title_margin">72dp</dimen>
+
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="list_item_icon_margin">16dp</dimen>
+
+    <dimen name="list_item_name_marginStart">72dp</dimen>
+
+    <dimen name="list_item_name_marginEnd">16dp</dimen>
+
+    <integer name="span_count0">1</integer>
+
+    <integer name="span_count1">1</integer>
+
+    <integer name="span_count2">2</integer>
+
+    <integer name="span_count3">1</integer>
+
     <!--APP THEMES-->
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar" >
+    <style name="app_theme" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="colorPrimary">@color/colorPrimary0</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark0</item>
         <item name="colorAccent">@color/colorAccentDark0</item>
@@ -10,19 +34,19 @@
         <item name="colorSelected">#80B2EBF2</item>
     </style>
 
-    <style name="AppTheme.Audio" >
+    <style name="app_theme.Audio" >
         <item name="colorPrimary">@color/colorPrimary1</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark1</item>
         <item name="colorAccent">@color/colorAccentDark1</item>
     </style>
 
-    <style name="AppTheme.Image" >
+    <style name="app_theme.Image" >
         <item name="colorPrimary">@color/colorPrimary2</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark2</item>
         <item name="colorAccent">@color/colorAccentDark2</item>
     </style>
 
-    <style name="AppTheme.Video" >
+    <style name="app_theme.Video" >
         <item name="colorPrimary">@color/colorPrimary3</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark3</item>
         <item name="colorAccent">@color/colorAccentDark3</item>
@@ -66,9 +90,61 @@
     <!--ATTRS-->
 
     <attr name="colorAccentLight"
-          format="color|reference" />
+        format="color|reference" />
 
     <attr name="colorSelected"
-          format="color|reference" />
+        format="color|reference" />
+
+    <!--COLORS-->
+
+    <color name="colorAccentLight">#FFFF00</color>
+
+    <color name="colorAccentDark0">#448AFF</color>
+
+    <color name="colorAccentDark1">#E040FB</color>
+
+    <color name="colorAccentDark2">#536DFE</color>
+
+    <color name="colorAccentDark3">#448AFF</color>
+
+    <color name="colorPrimary0">#00BCD4</color>
+
+    <color name="colorPrimary1">#EF6C00</color>
+
+    <color name="colorPrimary2">#9C27B0</color>
+
+    <color name="colorPrimary3">#F44336</color>
+
+    <color name="colorPrimaryDark0">#0097A7</color>
+
+    <color name="colorPrimaryDark1">#E64A19</color>
+
+    <color name="colorPrimaryDark2">#7B1FA2</color>
+
+    <color name="colorPrimaryDark3">#D32F2F</color>
+
+    <!--FILE COLORS-->
+
+    <color name="directory">#61000000</color>
+
+    <color name="misc_file">#8A000000</color>
+
+    <color name="audio">#EF6C00</color>
+
+    <color name="image">#9C27B0</color>
+
+    <color name="video">#F44336</color>
+
+    <color name="doc">#2196F3</color>
+
+    <color name="ppt">#FFC107</color>
+
+    <color name="xls">#4CAF50</color>
+
+    <color name="pdf">#F44336</color>
+
+    <color name="txt">#00BCD4</color>
+
+    <color name="zip">#FDD835</color>
 
 </resources>

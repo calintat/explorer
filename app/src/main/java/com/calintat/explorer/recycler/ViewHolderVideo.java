@@ -14,52 +14,52 @@ import java.io.File;
 
 import static com.calintat.explorer.utils.FileUtils.getName;
 
-public final class RecyclerViewHolder3 extends RecyclerViewHolder
-{
+final class ViewHolderVideo extends ViewHolder {
+
     private TextView name;
 
     private TextView duration;
 
-    RecyclerViewHolder3(Context context, RecyclerOnItemClickListener listener, View view)
-    {
+    ViewHolderVideo(Context context, OnItemClickListener listener, View view) {
+
         super(context, listener, view);
     }
 
     @Override
-    protected void loadIcon()
-    {
+    protected void loadIcon() {
+
         image = (ImageView) itemView.findViewById(R.id.list_item_image);
     }
 
     @Override
-    protected void loadName()
-    {
+    protected void loadName() {
+
         name = (TextView) itemView.findViewById(R.id.list_item_name);
     }
 
     @Override
-    protected void loadInfo()
-    {
+    protected void loadInfo() {
+
         duration = (TextView) itemView.findViewById(R.id.list_item_duration);
     }
 
     @Override
-    protected void bindIcon(File file, Boolean selected)
-    {
+    protected void bindIcon(File file, Boolean selected) {
+
         Glide.with(context).load(file).into(image);
     }
 
     @Override
-    protected void bindName(File file)
-    {
+    protected void bindName(File file) {
+
         boolean extension = PreferenceUtils.getBoolean(context, "pref_extension", true);
 
         name.setText(extension ? getName(file) : file.getName());
     }
 
     @Override
-    protected void bindInfo(File file)
-    {
+    protected void bindInfo(File file) {
+
         duration.setText(FileUtils.getDuration(file));
     }
 }

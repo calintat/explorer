@@ -8,36 +8,38 @@ import android.support.v7.widget.Toolbar;
 
 import com.calintat.explorer.R;
 
-public class SettingsActivity extends AppCompatActivity
-{
+public class SettingsActivity extends AppCompatActivity {
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_settings);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        if (toolbar != null)
-        {
+        if (toolbar != null) {
+
             toolbar.setNavigationIcon(R.drawable.ic_back);
 
             toolbar.setNavigationOnClickListener(v -> finish());
+
+            toolbar.setTitle(R.string.navigation_settings);
         }
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
-        fragmentTransaction.replace(R.id.content_frame, new SettingsFragment()).commit();
+        fragmentTransaction.replace(R.id.fragment, new SettingsFragment()).commit();
 
         setSupportActionBar(toolbar);
     }
 
-    public static class SettingsFragment extends PreferenceFragment
-    {
+    public static class SettingsFragment extends PreferenceFragment {
+
         @Override
-        public void onCreate(Bundle savedInstanceState)
-        {
+        public void onCreate(Bundle savedInstanceState) {
+
             super.onCreate(savedInstanceState);
 
             addPreferencesFromResource(R.xml.preferences);

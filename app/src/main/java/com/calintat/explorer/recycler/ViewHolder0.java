@@ -22,50 +22,50 @@ import static com.calintat.explorer.utils.FileUtils.getName;
 import static com.calintat.explorer.utils.FileUtils.getSize;
 import static com.calintat.explorer.utils.PreferenceUtils.getBoolean;
 
-public final class RecyclerViewHolder0 extends RecyclerViewHolder
-{
+final class ViewHolder0 extends ViewHolder {
+
     private TextView name;
 
     private TextView date;
 
     private TextView size;
 
-    RecyclerViewHolder0(Context context, RecyclerOnItemClickListener listener, View view)
-    {
+    ViewHolder0(Context context, OnItemClickListener listener, View view) {
+
         super(context, listener, view);
     }
 
     @Override
-    protected void loadIcon()
-    {
+    protected void loadIcon() {
+
         image = (ImageView) itemView.findViewById(R.id.list_item_image);
     }
 
     @Override
-    protected void loadName()
-    {
+    protected void loadName() {
+
         name = (TextView) itemView.findViewById(R.id.list_item_name);
     }
 
     @Override
-    protected void loadInfo()
-    {
+    protected void loadInfo() {
+
         date = (TextView) itemView.findViewById(R.id.list_item_date);
 
         size = (TextView) itemView.findViewById(R.id.list_item_size);
     }
 
     @Override
-    protected void bindIcon(File file, Boolean selected)
-    {
-        if (getBoolean(context, "pref_icon", true))
-        {
+    protected void bindIcon(File file, Boolean selected) {
+
+        if (getBoolean(context, "pref_icon", true)) {
+
             image.setOnClickListener(onActionClickListener);
 
             image.setOnLongClickListener(onActionLongClickListener);
 
-            if (selected)
-            {
+            if (selected) {
+
                 int color = ContextCompat.getColor(context, R.color.misc_file);
 
                 image.setBackground(getBackground(color));
@@ -76,8 +76,8 @@ public final class RecyclerViewHolder0 extends RecyclerViewHolder
 
                 image.setImageDrawable(drawable);
             }
-            else
-            {
+            else {
+
                 int color = ContextCompat.getColor(context, getColorResource(file));
 
                 image.setBackground(getBackground(color));
@@ -89,8 +89,8 @@ public final class RecyclerViewHolder0 extends RecyclerViewHolder
                 image.setImageDrawable(drawable);
             }
         }
-        else
-        {
+        else {
+
             int color = ContextCompat.getColor(context, getColorResource(file));
 
             image.setBackground(null);
@@ -104,16 +104,16 @@ public final class RecyclerViewHolder0 extends RecyclerViewHolder
     }
 
     @Override
-    protected void bindName(File file)
-    {
+    protected void bindName(File file) {
+
         boolean extension = getBoolean(context, "pref_extension", true);
 
         name.setText(extension ? getName(file) : file.getName());
     }
 
     @Override
-    protected void bindInfo(File file)
-    {
+    protected void bindInfo(File file) {
+
         date.setText(getLastModified(file));
 
         size.setText(getSize(context, file));
@@ -123,8 +123,8 @@ public final class RecyclerViewHolder0 extends RecyclerViewHolder
         setVisibility(size, getBoolean(context, "pref_size", false));
     }
 
-    private ShapeDrawable getBackground(int color)
-    {
+    private ShapeDrawable getBackground(int color) {
+
         ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
 
         int size = (int) context.getResources().getDimension(R.dimen.avatar_size);

@@ -7,24 +7,24 @@ import android.widget.ImageView;
 
 import java.io.File;
 
-public abstract class RecyclerViewHolder extends RecyclerView.ViewHolder
-{
+abstract class ViewHolder extends RecyclerView.ViewHolder {
+
     final Context context;
 
     ImageView image;
 
     View.OnClickListener onActionClickListener;
 
-    private View.OnClickListener onClickListener;
-
     View.OnLongClickListener onActionLongClickListener;
+
+    private View.OnClickListener onClickListener;
 
     private View.OnLongClickListener onLongClickListener;
 
     //----------------------------------------------------------------------------------------------
 
-    RecyclerViewHolder(Context context, RecyclerOnItemClickListener listener, View view)
-    {
+    ViewHolder(Context context, OnItemClickListener listener, View view) {
+
         super(view);
 
         this.context = context;
@@ -54,8 +54,8 @@ public abstract class RecyclerViewHolder extends RecyclerView.ViewHolder
 
     //----------------------------------------------------------------------------------------------
 
-    private void setClickListener(final RecyclerOnItemClickListener listener)
-    {
+    private void setClickListener(final OnItemClickListener listener) {
+
         this.onActionClickListener = v -> listener.onItemLongClick(getAdapterPosition());
 
         this.onActionLongClickListener = v -> listener.onItemLongClick(getAdapterPosition());
@@ -65,8 +65,8 @@ public abstract class RecyclerViewHolder extends RecyclerView.ViewHolder
         this.onLongClickListener = v -> listener.onItemLongClick(getAdapterPosition());
     }
 
-    void setData(final File file, Boolean selected)
-    {
+    void setData(final File file, Boolean selected) {
+
         itemView.setOnClickListener(onClickListener);
 
         itemView.setOnLongClickListener(onLongClickListener);
@@ -80,8 +80,8 @@ public abstract class RecyclerViewHolder extends RecyclerView.ViewHolder
         bindInfo(file);
     }
 
-    void setVisibility(View view, Boolean visibility)
-    {
+    void setVisibility(View view, Boolean visibility) {
+
         view.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 }

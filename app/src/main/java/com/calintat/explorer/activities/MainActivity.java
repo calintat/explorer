@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -31,8 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.calintat.explorer.R;
-import com.calintat.explorer.recycler.RecyclerAdapter;
-import com.calintat.explorer.recycler.RecyclerOnItemClickListener;
+import com.calintat.explorer.recycler.Adapter;
 import com.calintat.explorer.ui.InputDialog;
 import com.calintat.explorer.utils.FileUtils;
 import com.calintat.explorer.utils.PreferenceUtils;
@@ -40,20 +40,12 @@ import com.calintat.explorer.utils.PreferenceUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-import static com.calintat.explorer.utils.FileUtils.FileType;
-import static com.calintat.explorer.utils.FileUtils.getExternalStorage;
-import static com.calintat.explorer.utils.FileUtils.getInternalStorage;
-import static com.calintat.explorer.utils.FileUtils.getMimeType;
-import static com.calintat.explorer.utils.FileUtils.getName;
-import static com.calintat.explorer.utils.FileUtils.getPath;
-import static com.calintat.explorer.utils.FileUtils.getPublicDirectory;
-import static com.calintat.explorer.utils.FileUtils.getStorageUsage;
-import static com.calintat.explorer.utils.FileUtils.removeExtension;
-import static com.calintat.explorer.utils.FileUtils.unzip;
+import static com.calintat.explorer.utils.FileUtils.*;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
+
     private static final String SAVED_DIRECTORY = "com.calintat.explorer.SAVED_DIRECTORY";
 
     private static final String SAVED_SELECTION = "com.calintat.explorer.SAVED_SELECTION";
@@ -74,7 +66,7 @@ public class MainActivity extends AppCompatActivity
 
     private File currentDirectory;
 
-    private RecyclerAdapter recyclerAdapter;
+    private Adapter adapter;
 
     private String name;
 
@@ -83,8 +75,8 @@ public class MainActivity extends AppCompatActivity
     //----------------------------------------------------------------------------------------------
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
+
         initActivityFromIntent();
 
         super.onCreate(savedInstanceState);
@@ -111,24 +103,24 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
-        if (drawerLayout.isDrawerOpen(navigationView))
-        {
+    public void onBackPressed() {
+
+        if (drawerLayout.isDrawerOpen(navigationView)) {
+
             drawerLayout.closeDrawers();
 
             return;
         }
 
-        if (recyclerAdapter.anySelected())
-        {
-            recyclerAdapter.clearSelection();
+        if (adapter.anySelected()) {
+
+            adapter.clearSelection();
 
             return;
         }
 
-        if (!FileUtils.isStorage(currentDirectory))
-        {
+        if (!FileUtils.isStorage(currentDirectory)) {
+
             setPath(currentDirectory.getParentFile());
 
             return;
@@ -138,34 +130,37 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        if (requestCode == 0)
-        {
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)
-            {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == 0) {
+
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+
                 Snackbar.make(coordinatorLayout, "Permission required", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Settings", v -> gotoApplicationSettings())
                         .show();
             }
-            else loadIntoRecyclerView();
+            else {
+
+                loadIntoRecyclerView();
+            }
         }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
-    protected void onResume()
-    {
-        if (recyclerAdapter != null) recyclerAdapter.refresh();
+    protected void onResume() {
+
+        if (adapter != null) adapter.refresh();
 
         super.onResume();
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState)
-    {
-        recyclerAdapter.select(savedInstanceState.getIntegerArrayList(SAVED_SELECTION));
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        adapter.select(savedInstanceState.getIntegerArrayList(SAVED_SELECTION));
 
         String path = savedInstanceState.getString(SAVED_DIRECTORY, getInternalStorage().getPath());
 
@@ -175,9 +170,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        outState.putIntegerArrayList(SAVED_SELECTION, recyclerAdapter.getSelectedPositions());
+    public void onSaveInstanceState(Bundle outState) {
+
+        outState.putIntegerArrayList(SAVED_SELECTION, adapter.getSelectedPositions());
 
         outState.putString(SAVED_DIRECTORY, getPath(currentDirectory));
 
@@ -185,18 +180,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.action, menu);
 
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
             case R.id.action_delete:
                 actionDelete();
                 return true;
@@ -231,11 +226,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu)
-    {
-        if (recyclerAdapter != null)
-        {
-            int count = recyclerAdapter.getSelectedItemCount();
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        if (adapter != null) {
+
+            int count = adapter.getSelectedItemCount();
 
             menu.findItem(R.id.action_delete).setVisible(count >= 1);
 
@@ -257,37 +252,37 @@ public class MainActivity extends AppCompatActivity
 
     //----------------------------------------------------------------------------------------------
 
-    private void initActivityFromIntent()
-    {
+    private void initActivityFromIntent() {
+
         name = getIntent().getStringExtra(EXTRA_NAME);
 
         type = getIntent().getStringExtra(EXTRA_TYPE);
 
-        if (type != null)
-        {
-            switch (type)
-            {
+        if (type != null) {
+
+            switch (type) {
+
                 case "audio":
-                    setTheme(R.style.AppTheme_Audio);
+                    setTheme(R.style.app_theme_Audio);
                     break;
 
                 case "image":
-                    setTheme(R.style.AppTheme_Image);
+                    setTheme(R.style.app_theme_Image);
                     break;
 
                 case "video":
-                    setTheme(R.style.AppTheme_Video);
+                    setTheme(R.style.app_theme_Video);
                     break;
             }
         }
     }
 
-    private void loadIntoRecyclerView()
-    {
+    private void loadIntoRecyclerView() {
+
         String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-        if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, permission))
-        {
+        if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, permission)) {
+
             ActivityCompat.requestPermissions(this, new String[]{permission}, 0);
 
             return;
@@ -295,27 +290,27 @@ public class MainActivity extends AppCompatActivity
 
         final Context context = this;
 
-        if (name != null)
-        {
-            recyclerAdapter.addAll(FileUtils.searchFilesName(context, name));
+        if (name != null) {
+
+            adapter.addAll(FileUtils.searchFilesName(context, name));
 
             return;
         }
 
-        if (type != null)
-        {
-            switch (type)
-            {
+        if (type != null) {
+
+            switch (type) {
+
                 case "audio":
-                    recyclerAdapter.addAll(FileUtils.getAudioLibrary(context));
+                    adapter.addAll(FileUtils.getAudioLibrary(context));
                     break;
 
                 case "image":
-                    recyclerAdapter.addAll(FileUtils.getImageLibrary(context));
+                    adapter.addAll(FileUtils.getImageLibrary(context));
                     break;
 
                 case "video":
-                    recyclerAdapter.addAll(FileUtils.getVideoLibrary(context));
+                    adapter.addAll(FileUtils.getVideoLibrary(context));
                     break;
             }
 
@@ -327,8 +322,8 @@ public class MainActivity extends AppCompatActivity
 
     //----------------------------------------------------------------------------------------------
 
-    private void initAppBarLayout()
-    {
+    private void initAppBarLayout() {
+
         toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -338,33 +333,33 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
     }
 
-    private void initCoordinatorLayout()
-    {
+    private void initCoordinatorLayout() {
+
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
     }
 
-    private void initDrawerLayout()
-    {
+    private void initDrawerLayout() {
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         if (drawerLayout == null) return;
 
-        if (name != null || type != null)
-        {
+        if (name != null || type != null) {
+
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
     }
 
-    private void initFloatingActionButton()
-    {
+    private void initFloatingActionButton() {
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floating_action_button);
 
         if (fab == null) return;
 
         fab.setOnClickListener(v -> actionCreate());
 
-        if (name != null || type != null)
-        {
+        if (name != null || type != null) {
+
             ViewGroup.LayoutParams layoutParams = fab.getLayoutParams();
 
             ((CoordinatorLayout.LayoutParams) layoutParams).setAnchorId(View.NO_ID);
@@ -375,8 +370,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void initNavigationView()
-    {
+    private void initNavigationView() {
+
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
         if (navigationView == null) return;
@@ -387,8 +382,7 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(item ->
         {
-            switch (item.getItemId())
-            {
+            switch (item.getItemId()) {
                 case R.id.navigation_audio:
                     setType("audio");
                     return true;
@@ -412,8 +406,8 @@ public class MainActivity extends AppCompatActivity
 
             drawerLayout.closeDrawers();
 
-            switch (item.getItemId())
-            {
+            switch (item.getItemId()) {
+
                 case R.id.navigation_directory_0:
                     setPath(getPublicDirectory("DCIM"));
                     return true;
@@ -446,14 +440,14 @@ public class MainActivity extends AppCompatActivity
         textView.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS)));
     }
 
-    private void initRecyclerView()
-    {
-        recyclerAdapter = new RecyclerAdapter(this);
+    private void initRecyclerView() {
 
-        recyclerAdapter.setOnItemClickListener(new OnItemClickListener(this));
+        adapter = new Adapter(this);
 
-        recyclerAdapter.setOnSelectionListener(() ->
-        {
+        adapter.setOnItemClickListener(new OnItemClickListener(this));
+
+        adapter.setOnItemSelectedListener(() -> {
+
             invalidateOptionsMenu();
 
             invalidateTitle();
@@ -461,56 +455,56 @@ public class MainActivity extends AppCompatActivity
             invalidateToolbar();
         });
 
-        if (type != null)
-        {
-            switch (type)
-            {
+        if (type != null) {
+
+            switch (type) {
+
                 case "audio":
-                    recyclerAdapter.setItemLayout(R.layout.list_item_1);
-                    recyclerAdapter.setSpanCount(getResources().getInteger(R.integer.span_count1));
+                    adapter.setItemLayout(R.layout.list_item_1);
+                    adapter.setSpanCount(getResources().getInteger(R.integer.span_count1));
                     break;
 
                 case "image":
-                    recyclerAdapter.setItemLayout(R.layout.list_item_2);
-                    recyclerAdapter.setSpanCount(getResources().getInteger(R.integer.span_count2));
+                    adapter.setItemLayout(R.layout.list_item_2);
+                    adapter.setSpanCount(getResources().getInteger(R.integer.span_count2));
                     break;
 
                 case "video":
-                    recyclerAdapter.setItemLayout(R.layout.list_item_3);
-                    recyclerAdapter.setSpanCount(getResources().getInteger(R.integer.span_count3));
+                    adapter.setItemLayout(R.layout.list_item_3);
+                    adapter.setSpanCount(getResources().getInteger(R.integer.span_count3));
                     break;
             }
         }
-        else
-        {
-            recyclerAdapter.setItemLayout(R.layout.list_item_0);
+        else {
 
-            recyclerAdapter.setSpanCount(getResources().getInteger(R.integer.span_count0));
+            adapter.setItemLayout(R.layout.list_item_0);
+
+            adapter.setSpanCount(getResources().getInteger(R.integer.span_count0));
         }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        if (recyclerView != null) recyclerView.setAdapter(recyclerAdapter);
+        if (recyclerView != null) recyclerView.setAdapter(adapter);
     }
 
     //----------------------------------------------------------------------------------------------
 
-    private void invalidateTitle()
-    {
-        if (recyclerAdapter.anySelected())
-        {
-            int selectedItemCount = recyclerAdapter.getSelectedItemCount();
+    private void invalidateTitle() {
+
+        if (adapter.anySelected()) {
+
+            int selectedItemCount = adapter.getSelectedItemCount();
 
             toolbarLayout.setTitle(String.format("%s selected", selectedItemCount));
         }
-        else if (name != null)
-        {
+        else if (name != null) {
+
             toolbarLayout.setTitle(String.format("Search for %s", name));
         }
-        else if (type != null)
-        {
-            switch (type)
-            {
+        else if (type != null) {
+
+            switch (type) {
+
                 case "image":
                     toolbarLayout.setTitle("Images");
                     break;
@@ -524,32 +518,32 @@ public class MainActivity extends AppCompatActivity
                     break;
             }
         }
-        else if (currentDirectory != null && !currentDirectory.equals(getInternalStorage()))
-        {
+        else if (currentDirectory != null && !currentDirectory.equals(getInternalStorage())) {
+
             toolbarLayout.setTitle(getName(currentDirectory));
         }
-        else
-        {
+        else {
+
             toolbarLayout.setTitle(getResources().getString(R.string.app_name));
         }
     }
 
-    private void invalidateToolbar()
-    {
-        if (recyclerAdapter.anySelected())
-        {
+    private void invalidateToolbar() {
+
+        if (adapter.anySelected()) {
+
             toolbar.setNavigationIcon(R.drawable.ic_clear);
 
-            toolbar.setNavigationOnClickListener(v -> recyclerAdapter.clearSelection());
+            toolbar.setNavigationOnClickListener(v -> adapter.clearSelection());
         }
-        else if (name == null && type == null)
-        {
+        else if (name == null && type == null) {
+
             toolbar.setNavigationIcon(R.drawable.ic_menu);
 
             toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(navigationView));
         }
-        else
-        {
+        else {
+
             toolbar.setNavigationIcon(R.drawable.ic_back);
 
             toolbar.setNavigationOnClickListener(v -> finish());
@@ -558,23 +552,22 @@ public class MainActivity extends AppCompatActivity
 
     //----------------------------------------------------------------------------------------------
 
-    private void actionCreate()
-    {
-        InputDialog inputDialog = new InputDialog(this, "Create", "Create directory")
-        {
+    private void actionCreate() {
+
+        InputDialog inputDialog = new InputDialog(this, "Create", "Create directory") {
+
             @Override
-            public void onActionClick(String text)
-            {
-                try
-                {
+            public void onActionClick(String text) {
+
+                try {
                     File directory = FileUtils.createDirectory(currentDirectory, text);
 
-                    recyclerAdapter.clearSelection();
+                    adapter.clearSelection();
 
-                    recyclerAdapter.add(directory);
+                    adapter.add(directory);
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
+
                     showMessage(e);
                 }
             }
@@ -583,42 +576,42 @@ public class MainActivity extends AppCompatActivity
         inputDialog.show();
     }
 
-    private void actionDelete()
-    {
-        actionDelete(recyclerAdapter.getSelectedItems());
+    private void actionDelete() {
 
-        recyclerAdapter.clearSelection();
+        actionDelete(adapter.getSelectedItems());
+
+        adapter.clearSelection();
     }
 
-    private void actionDelete(final List<File> files)
-    {
+    private void actionDelete(final List<File> files) {
+
         final File sourceDirectory = currentDirectory;
 
-        recyclerAdapter.removeAll(files);
+        adapter.removeAll(files);
 
         String message = String.format("%s files deleted", files.size());
 
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
-                .setAction("Undo", v ->
-                {
-                    if (currentDirectory == null || currentDirectory.equals(sourceDirectory))
-                    {
-                        recyclerAdapter.addAll(files);
+                .setAction("Undo", v -> {
+
+                    if (currentDirectory == null || currentDirectory.equals(sourceDirectory)) {
+
+                        adapter.addAll(files);
                     }
                 })
-                .setCallback(new Snackbar.Callback()
-                {
+                .addCallback(new Snackbar.Callback() {
+
                     @Override
-                    public void onDismissed(Snackbar snackbar, int event)
-                    {
-                        if (event != DISMISS_EVENT_ACTION)
-                        {
-                            try
-                            {
+                    public void onDismissed(Snackbar snackbar, int event) {
+
+                        if (event != DISMISS_EVENT_ACTION) {
+
+                            try {
+
                                 for (File file : files) FileUtils.deleteFile(file);
                             }
-                            catch (Exception e)
-                            {
+                            catch (Exception e) {
+
                                 showMessage(e);
                             }
                         }
@@ -629,67 +622,67 @@ public class MainActivity extends AppCompatActivity
                 .show();
     }
 
-    private void actionRename()
-    {
-        final List<File> selectedItems = recyclerAdapter.getSelectedItems();
+    private void actionRename() {
 
-        InputDialog inputDialog = new InputDialog(this, "Rename", "Rename")
-        {
+        final List<File> selectedItems = adapter.getSelectedItems();
+
+        InputDialog inputDialog = new InputDialog(this, "Rename", "Rename") {
+
             @Override
-            public void onActionClick(String text)
-            {
-                recyclerAdapter.clearSelection();
+            public void onActionClick(String text) {
 
-                try
-                {
-                    if (selectedItems.size() == 1)
-                    {
+                adapter.clearSelection();
+
+                try {
+
+                    if (selectedItems.size() == 1) {
+
                         File file = selectedItems.get(0);
 
-                        int index = recyclerAdapter.indexOf(file);
+                        int index = adapter.indexOf(file);
 
-                        recyclerAdapter.updateItemAt(index, FileUtils.renameFile(file, text));
+                        adapter.updateItemAt(index, FileUtils.renameFile(file, text));
                     }
-                    else
-                    {
+                    else {
+
                         int size = String.valueOf(selectedItems.size()).length();
 
                         String format = " (%0" + size + "d)";
 
-                        for (int i = 0; i < selectedItems.size(); i++)
-                        {
+                        for (int i = 0; i < selectedItems.size(); i++) {
+
                             File file = selectedItems.get(i);
 
-                            int index = recyclerAdapter.indexOf(file);
+                            int index = adapter.indexOf(file);
 
                             File newFile = FileUtils.renameFile(file, text + String.format(format, i + 1));
 
-                            recyclerAdapter.updateItemAt(index, newFile);
+                            adapter.updateItemAt(index, newFile);
                         }
                     }
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
+
                     showMessage(e);
                 }
             }
         };
 
-        if (selectedItems.size() == 1)
-        {
+        if (selectedItems.size() == 1) {
+
             inputDialog.setDefault(removeExtension(selectedItems.get(0).getName()));
         }
 
         inputDialog.show();
     }
 
-    private void actionSearch()
-    {
-        InputDialog inputDialog = new InputDialog(this, "Search", "Search")
-        {
+    private void actionSearch() {
+
+        InputDialog inputDialog = new InputDialog(this, "Search", "Search") {
+
             @Override
-            public void onActionClick(String text)
-            {
+            public void onActionClick(String text) {
+
                 setName(text);
             }
         };
@@ -697,34 +690,34 @@ public class MainActivity extends AppCompatActivity
         inputDialog.show();
     }
 
-    private void actionCopy()
-    {
-        List<File> selectedItems = recyclerAdapter.getSelectedItems();
+    private void actionCopy() {
 
-        recyclerAdapter.clearSelection();
+        List<File> selectedItems = adapter.getSelectedItems();
+
+        adapter.clearSelection();
 
         transferFiles(selectedItems, false);
     }
 
-    private void actionMove()
-    {
-        List<File> selectedItems = recyclerAdapter.getSelectedItems();
+    private void actionMove() {
 
-        recyclerAdapter.clearSelection();
+        List<File> selectedItems = adapter.getSelectedItems();
+
+        adapter.clearSelection();
 
         transferFiles(selectedItems, true);
     }
 
-    private void actionSend()
-    {
+    private void actionSend() {
+
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 
         intent.setType("*/*");
 
         ArrayList<Uri> uris = new ArrayList<>();
 
-        for (File file : recyclerAdapter.getSelectedItems())
-        {
+        for (File file : adapter.getSelectedItems()) {
+
             if (file.isFile()) uris.add(Uri.fromFile(file));
         }
 
@@ -733,8 +726,8 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private void actionSort()
-    {
+    private void actionSort() {
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         int checkedItem = PreferenceUtils.getInteger(this, "pref_sort", 0);
@@ -743,9 +736,9 @@ public class MainActivity extends AppCompatActivity
 
         final Context context = this;
 
-        builder.setSingleChoiceItems(sorting, checkedItem, (dialog, which) ->
-        {
-            recyclerAdapter.update(which);
+        builder.setSingleChoiceItems(sorting, checkedItem, (dialog, which) -> {
+
+            adapter.update(which);
 
             PreferenceUtils.putInt(context, "pref_sort", which);
 
@@ -759,25 +752,25 @@ public class MainActivity extends AppCompatActivity
 
     //----------------------------------------------------------------------------------------------
 
-    private void transferFiles(final List<File> files, final Boolean delete)
-    {
+    private void transferFiles(final List<File> files, final Boolean delete) {
+
         String paste = delete ? "moved" : "copied";
 
-        String message = String.format("%d items waiting to be %s", files.size(), paste);
+        String message = String.format(Locale.getDefault(), "%d items waiting to be %s", files.size(), paste);
 
-        View.OnClickListener onClickListener = v ->
-        {
-            try
-            {
-                for (File file : files)
-                {
-                    recyclerAdapter.addAll(FileUtils.copyFile(file, currentDirectory));
+        View.OnClickListener onClickListener = v -> {
+
+            try {
+
+                for (File file : files) {
+
+                    adapter.addAll(FileUtils.copyFile(file, currentDirectory));
 
                     if (delete) FileUtils.deleteFile(file);
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
+
                 showMessage(e);
             }
         };
@@ -787,34 +780,34 @@ public class MainActivity extends AppCompatActivity
                 .show();
     }
 
-    private void showMessage(Exception e)
-    {
+    private void showMessage(Exception e) {
+
         showMessage(e.getMessage());
     }
 
-    private void showMessage(String message)
-    {
+    private void showMessage(String message) {
+
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
     //----------------------------------------------------------------------------------------------
 
-    private void gotoFeedback()
-    {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+    private void gotoFeedback() {
 
-        intent.setData(Uri.parse("market://details?id=com.calintat.explorer"));
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
 
-        startActivity(intent);
+        builder.setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary0));
+
+        builder.build().launchUrl(this, Uri.parse("https://github.com/calintat/Explorer/issues"));
     }
 
-    private void gotoSettings()
-    {
+    private void gotoSettings() {
+
         startActivity(new Intent(this, SettingsActivity.class));
     }
 
-    private void gotoApplicationSettings()
-    {
+    private void gotoApplicationSettings() {
+
         Intent intent = new Intent();
 
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -824,10 +817,10 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private void setPath(File directory)
-    {
-        if (!directory.exists())
-        {
+    private void setPath(File directory) {
+
+        if (!directory.exists()) {
+
             Toast.makeText(this, "Directory doesn't exist", Toast.LENGTH_SHORT).show();
 
             return;
@@ -835,17 +828,17 @@ public class MainActivity extends AppCompatActivity
 
         currentDirectory = directory;
 
-        recyclerAdapter.clear();
+        adapter.clear();
 
-        recyclerAdapter.clearSelection();
+        adapter.clearSelection();
 
-        recyclerAdapter.addAll(FileUtils.getChildren(directory));
+        adapter.addAll(FileUtils.getChildren(directory));
 
         invalidateTitle();
     }
 
-    private void setName(String name)
-    {
+    private void setName(String name) {
+
         Intent intent = new Intent(this, MainActivity.class);
 
         intent.putExtra(EXTRA_NAME, name);
@@ -853,14 +846,14 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private void setType(String type)
-    {
+    private void setType(String type) {
+
         Intent intent = new Intent(this, MainActivity.class);
 
         intent.putExtra(EXTRA_TYPE, type);
 
-        if (Build.VERSION.SDK_INT >= 21)
-        {
+        if (Build.VERSION.SDK_INT >= 21) {
+
             intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
@@ -871,42 +864,42 @@ public class MainActivity extends AppCompatActivity
 
     //----------------------------------------------------------------------------------------------
 
-    private final class OnItemClickListener implements RecyclerOnItemClickListener
-    {
+    private final class OnItemClickListener implements com.calintat.explorer.recycler.OnItemClickListener {
+
         private final Context context;
 
-        private OnItemClickListener(Context context)
-        {
+        private OnItemClickListener(Context context) {
+
             this.context = context;
         }
 
         @Override
-        public void onItemClick(int position)
-        {
-            final File file = recyclerAdapter.get(position);
+        public void onItemClick(int position) {
 
-            if (recyclerAdapter.anySelected())
-            {
-                recyclerAdapter.toggle(position);
+            final File file = adapter.get(position);
+
+            if (adapter.anySelected()) {
+
+                adapter.toggle(position);
 
                 return;
             }
 
-            if (file.isDirectory())
-            {
-                if (file.canRead())
-                {
+            if (file.isDirectory()) {
+
+                if (file.canRead()) {
+
                     setPath(file);
                 }
-                else
-                {
+                else {
+
                     showMessage("Cannot open directory");
                 }
             }
-            else
-            {
-                if (Intent.ACTION_GET_CONTENT.equals(getIntent().getAction()))
-                {
+            else {
+
+                if (Intent.ACTION_GET_CONTENT.equals(getIntent().getAction())) {
+
                     Intent intent = new Intent();
 
                     intent.setDataAndType(Uri.fromFile(file), getMimeType(file));
@@ -915,37 +908,38 @@ public class MainActivity extends AppCompatActivity
 
                     finish();
                 }
-                else if (FileType.getFileType(file) == FileType.ZIP)
-                {
+                else if (FileType.getFileType(file) == FileType.ZIP) {
+
                     final ProgressDialog dialog = ProgressDialog.show(context, "", "Unzipping", true);
 
                     Thread thread = new Thread(() -> {
-                        try
-                        {
+
+                        try {
+
                             setPath(unzip(file));
 
                             runOnUiThread(dialog::dismiss);
                         }
-                        catch (Exception e)
-                        {
+                        catch (Exception e) {
+
                             showMessage(e);
                         }
                     });
 
                     thread.run();
                 }
-                else
-                {
-                    try
-                    {
+                else {
+
+                    try {
+
                         Intent intent = new Intent(Intent.ACTION_VIEW);
 
                         intent.setDataAndType(Uri.fromFile(file), getMimeType(file));
 
                         startActivity(intent);
                     }
-                    catch (Exception e)
-                    {
+                    catch (Exception e) {
+
                         showMessage(String.format("Cannot open %s", getName(file)));
                     }
                 }
@@ -953,9 +947,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public boolean onItemLongClick(int position)
-        {
-            recyclerAdapter.toggle(position);
+        public boolean onItemLongClick(int position) {
+
+            adapter.toggle(position);
 
             return true;
         }

@@ -10,18 +10,18 @@ android {
 
         applicationId "com.calintat.explorer"
 
+        versionName "@string/app_version"
+
+        versionCode 5
+
+        minSdkVersion 21
+
+        targetSdkVersion 25
+
         jackOptions {
 
             enabled true
         }
-
-        minSdkVersion 19
-
-        targetSdkVersion 25
-
-        versionCode 4
-
-        versionName "1.0.3"
     }
 
     compileOptions {
@@ -39,6 +39,8 @@ dependencies {
     compile "com.android.support:appcompat-v7:$support_version"
 
     compile "com.android.support:cardview-v7:$support_version"
+
+    compile "com.android.support:customtabs:$support_version"
 
     compile "com.android.support:design:$support_version"
 

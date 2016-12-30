@@ -38,4 +38,29 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="About" >
+
+        <Preference
+            android:title="Version"
+            android:summary="@string/app_version" >
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/details?id=com.calintat.explorer" />
+
+        </Preference>
+
+        <Preference
+            android:title="Developer"
+            android:summary="@string/app_developer" >
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/dev?id=5526451977947367946" />
+
+        </Preference>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

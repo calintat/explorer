@@ -7,14 +7,12 @@ import android.widget.EditText;
 
 import com.calintat.explorer.R;
 
-public abstract class InputDialog extends AlertDialog.Builder
-{
+public abstract class InputDialog extends AlertDialog.Builder {
+
     private final EditText editText;
 
-    public abstract void onActionClick(String text);
+    protected InputDialog(Context context, String positive, String title) {
 
-    public InputDialog(Context context, String positive, String title)
-    {
         super(context);
 
         View view = View.inflate(context, R.layout.dialog_edit_text, null);
@@ -26,14 +24,17 @@ public abstract class InputDialog extends AlertDialog.Builder
         setNegativeButton("Cancel", null);
 
         setPositiveButton(positive, (dialog, which) -> {
+
             if (editText.length() != 0) onActionClick(editText.getText().toString());
         });
 
         setTitle(title);
     }
 
-    public void setDefault(String text)
-    {
+    public abstract void onActionClick(String text);
+
+    public void setDefault(String text) {
+
         editText.setText(text);
 
         editText.setSelection(editText.getText().length());
