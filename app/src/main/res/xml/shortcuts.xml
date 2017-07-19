@@ -1,0 +1,57 @@
+<shortcuts
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:targetApi="25" >
+
+    <shortcut
+        android:shortcutId="shortcut_image"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_image"
+        android:shortcutShortLabel="@string/navigation_image" >
+
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.calintat.explorer"
+            android:targetClass="com.calintat.explorer.activities.MainActivity" >
+
+            <extra android:name="com.calintat.explorer.EXTRA_TYPE" android:value="image" />
+
+        </intent>
+
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="shortcut_audio"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_audio"
+        android:shortcutShortLabel="@string/navigation_audio" >
+
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.calintat.explorer"
+            android:targetClass="com.calintat.explorer.activities.MainActivity" >
+
+            <extra android:name="com.calintat.explorer.EXTRA_TYPE" android:value="audio" />
+
+        </intent>
+
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="shortcut_video"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_video"
+        android:shortcutShortLabel="@string/navigation_video" >
+
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.calintat.explorer"
+            android:targetClass="com.calintat.explorer.activities.MainActivity" >
+
+            <extra android:name="com.calintat.explorer.EXTRA_TYPE" android:value="video" />
+
+        </intent>
+
+    </shortcut>
+
+</shortcuts>

@@ -18,6 +18,10 @@
         <activity
             android:name=".activities.MainActivity" >
 
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+
             <intent-filter>
 
                 <action
